@@ -2,6 +2,9 @@
 #include "VFIntroShared.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Animation/AnimSequence.h"
+#include "Animation/AnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -42,7 +45,30 @@ void AVFIntroNPC::BeginPlay(){
 void AVFIntroNPC::RefreshPresentation(){
  Super::RefreshPresentation();if(!Health||!WorldWeapon)return;
  WorldWeapon->SetVisibility(bArmed&&Health->State.Life==EVeilLife::Alive&&!IsHidden());
+ ApplyAnimation();
  if(Health->State.Life==EVeilLife::Dead&&HasAuthority())if(auto* M=AVFMissionController::Get(this))M->OnPawnKilled(this);
+}
+// Armed humans use Epic's third-person rifle Anim Blueprint (UE 5.8 first-person template, Variant_Shooter);
+// unarmed keep ABP_Unarmed. Deaths play one of the template death clips instead of tipping the mesh over.
+void AVFIntroNPC::ApplyAnimation(){
+ USkeletalMeshComponent* Body=GetMesh();if(!Body||!Body->GetSkeletalMeshAsset())return;
+ const bool Dead=Health->State.Life==EVeilLife::Dead;
+ Body->SetRelativeRotation(FRotator(0,-90,0));
+ if(Dead){
+  if(!bDeathPlayed){bDeathPlayed=true;static const TCHAR* Clips[]={TEXT("MM_Death_Back_01"),TEXT("MM_Death_Front_01"),TEXT("MM_Death_Front_02"),TEXT("MM_Death_Front_03"),TEXT("MM_Death_Left_01"),TEXT("MM_Death_Right_01")};
+   const FString Name=Clips[FMath::RandRange(0,5)];
+   if(auto* Clip=LoadObject<UAnimSequence>(nullptr,*FString::Printf(TEXT("/Game/Characters/Mannequins/Anims/Death/%s.%s"),*Name,*Name),nullptr,LOAD_NoWarn|LOAD_Quiet))Body->PlayAnimation(Clip,false);}
+  return;
+ }
+ bDeathPlayed=false;
+ const TCHAR* Path=bArmed?TEXT("/Game/Variant_Shooter/Anims/ABP_TP_Rifle.ABP_TP_Rifle_C"):TEXT("/Game/Characters/Mannequins/Anims/Unarmed/ABP_Unarmed.ABP_Unarmed_C");
+ UClass* Want=LoadClass<UAnimInstance>(nullptr,Path,nullptr,LOAD_NoWarn|LOAD_Quiet);
+ if(Want&&(Body->GetAnimationMode()!=EAnimationMode::AnimationBlueprint||Body->GetAnimClass()!=Want)){Body->SetAnimationMode(EAnimationMode::AnimationBlueprint);Body->SetAnimInstanceClass(Want);}
+ // Carbine in the right hand (socket on the UE5 mannequin) rather than floating off the capsule.
+ if(bArmed&&WorldWeapon->GetAttachParent()!=Body){
+  if(auto* Carbine=LoadObject<UStaticMesh>(nullptr,TEXT("/Game/G4/Meshes/SM_Carbine.SM_Carbine"),nullptr,LOAD_NoWarn|LOAD_Quiet)){WorldWeapon->SetStaticMesh(Carbine);WorldWeapon->SetRelativeScale3D(FVector(.65f));}
+  WorldWeapon->AttachToComponent(Body,FAttachmentTransformRules::SnapToTargetNotIncludingScale,"HandGrip_R");
+ }
 }
 void AVFIntroNPC::EssentialHeal(){
  if(IsHidden())return;

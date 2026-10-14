@@ -227,6 +227,7 @@ public:
  bool IsAlive() const;
  bool IsHostileTo(const ACombatCharacter* Other) const;
 private:
+ void ApplyAnimation(); bool bDeathPlayed=false;
  void EssentialHeal(); FTimerHandle HealTimer;
 };
 
