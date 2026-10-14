@@ -1,0 +1,154 @@
+---,Beat,Speaker,Text,Duration
+opening_01,opening,,"Saturday. Late morning. The Hale property.",3.5
+talk_wife_01,talk_wife,Wife,"Coffee's still warm. Did you get the north fence done?",0
+talk_wife_02,talk_wife,Hale,"Most of it. The post by the culvert needs resetting.",0
+talk_wife_03,talk_wife,Wife,"The boys want to ride out to the creek after lunch. I told them to ask their father.",0
+talk_wife_04,talk_wife,Hale,"So they're asking me because you said yes.",0
+talk_wife_05,talk_wife,Wife,"I said maybe. You get to be the hero.",0
+talk_son_oldest_01,talk_son_oldest,Oldest son,"Dad, can I take the side-by-side to the back pasture later? I'll take these two.",0
+talk_son_oldest_02,talk_son_oldest,Hale,"Helmets. Stay off the creek bank. Back before dark.",0
+talk_son_oldest_03,talk_son_oldest,Oldest son,"Yes sir.",0
+talk_son_middle_01,talk_son_middle,Middle son,"Did you know cows can walk up stairs but not down?",0
+talk_son_middle_02,talk_son_middle,Hale,"Let's not test that one.",0
+talk_son_middle_03,talk_son_middle,Middle son,"I wasn't going to. Probably.",0
+talk_son_youngest_01,talk_son_youngest,Youngest son,"Dad, watch. Watch. It does a flip.",0
+talk_son_youngest_02,talk_son_youngest,Hale,"That's a good one, bud. Do it again.",0
+home_window_1_01,home_window_1,Hale,"(The long drive. Quiet out there. Quiet's good.)",0
+home_window_2_01,home_window_2,Hale,"(Back pasture. Cattle are bunched up by the tree line. Odd for this time of day.)",0
+home_photo_01,home_photo,Hale,"(The lake trip. Four years ago. Youngest wasn't walking yet.)",0
+home_pantry_01,home_pantry,Hale,"(Six months of food, rotated. She keeps the list. She's better at it than I am.)",0
+home_scanner_01,home_scanner,Hale,"(The county scanner. It's been silent all morning. It's never silent.)",0
+home_tv_01,home_tv,Hale,"(Cartoons. Somebody left it on again.)",0
+home_drawing_01,home_drawing,Hale,"(A drawing on the fridge. Five stick people and a very large dog. We don't have a dog.)",0
+shop_workbench_01,shop_workbench,Hale,"(The tractor hydraulics are still in pieces. Next weekend.)",0
+shop_monitors_01,shop_monitors,Hale,"(Gate, drive, barn, east field. Nothing but cattle.)",0
+alert_reaction_01,alert_reaction,Wife,"That's every channel.",0
+alert_reaction_02,alert_reaction,Hale,"Phones too.",0
+alert_reaction_03,alert_reaction,Wife,"Is this it?",0
+alert_reaction_04,alert_reaction,Hale,"Doesn't matter what it is. We do it the way we practiced.",0
+alert_reaction_05,alert_reaction,Hale,"Hey. Look at me. You've got your brothers. Hallway, away from the windows.",0
+alert_reaction_06,alert_reaction,Oldest son,"Dad, what's happening?",0
+alert_reaction_07,alert_reaction,Hale,"I don't know yet. That's why we're careful.",0
+alert_reaction_08,alert_reaction,Wife,"Shop. Now.",0
+vault_code_01,vault_code,Wife,"Your code or mine?",0
+vault_code_02,vault_code,Hale,"Mine.",0
+vault_code_03,vault_code,Wife,"Zero six one four. In case you've gotten old.",0
+vault_wrong_code_01,vault_wrong_code,Wife,"Zero. Six. One. Four.",0
+vault_open_01,vault_open,Wife,"Lights are coming up. Everything's where we left it.",0
+equip_wife_01,equip_wife,Wife,"Plates are on the left rack. Check your mag before you seat it.",0
+equip_wife_02,equip_wife,Wife,"Optic's still zeroed. Radios are on channel four.",0
+equip_rifle_01,equip_rifle,Hale,"(Rifle. Function check. Good.)",0
+equip_sidearm_01,equip_sidearm,Hale,"(Sidearm.)",0
+equip_armor_01,equip_armor,Wife,"Here. Arms up.",0
+equip_ammo_01,equip_ammo,Hale,"(Six mags. Same as always.)",0
+equip_radio_01,equip_radio,Wife,"Radio check.",0
+equip_radio_02,equip_radio,Hale,"Loud and clear.",0
+equip_medical_01,equip_medical,Wife,"Take the big kit. I've got the other one.",0
+equip_backpack_01,equip_backpack,Hale,"(Go bags. Three days each.)",0
+equip_supplies_01,equip_supplies,Hale,"(Water, filters, batteries. Hope we don't need them.)",0
+equip_done_01,equip_done,Wife,"I'm up. You?",0
+equip_done_02,equip_done,Hale,"Up.",0
+locals_incoming_01,locals_incoming,Wife,"Vehicle! Coming up the drive, coming in hot!",0
+locals_standoff_01,locals_standoff,Sheriff Mercer,"Hale! Hale, don't shoot. It's Mercer!",0
+locals_standoff_02,locals_standoff,Hale,"Hands where I can see them. All of you.",0
+locals_standoff_03,locals_standoff,Nathan,"It's us. It's just us.",0
+locals_standoff_04,locals_standoff,Hale,"Whose blood is that?",0
+locals_standoff_05,locals_standoff,Sheriff Mercer,"Not ours. Not all of it.",0
+locals_standoff_06,locals_standoff,Wife,"Inside. Keep your hands out of your pockets.",0
+locals_brief_01,locals_brief,Sheriff Mercer,"There are armed teams moving through the county. No markings. They hit the substation on Route 9 and the checkpoint at the county line.",0
+locals_brief_02,locals_brief,Sheriff Mercer,"I lost two deputies. I don't even know who they were shooting at.",0
+locals_brief_03,locals_brief,Mayor Vale,"I got three orders in an hour. Evacuate. Shelter in place. Then a federal liaison telling me to report to the courthouse with every department head.",0
+locals_brief_04,locals_brief,Mayor Vale,"Nobody who called me would give a name.",0
+locals_brief_05,locals_brief,Nathan,"Don't go to the courthouse.",0
+locals_brief_06,locals_brief,Sheriff Mercer,"You keep saying that like you know something.",0
+locals_brief_07,locals_brief,Nathan,"I know enough to come here.",0
+locals_nathan_aside_01,locals_nathan_aside,Hale,"How long have you known something was coming?",0
+locals_nathan_aside_02,locals_nathan_aside,Nathan,"Not long enough to call you. I'm sorry.",0
+locals_nathan_aside_03,locals_nathan_aside,Nathan,"Ask me later. When there's a later.",0
+panel_explosives_01,panel_explosives,Hale,"(Approach road: SAFE. Shop bay: SAFE.)",0
+panel_explosives_02,panel_explosives,Sheriff Mercer,"Are those explosives?",0
+panel_explosives_03,panel_explosives,Hale,"They're a deterrent.",0
+panel_explosives_04,panel_explosives,Sheriff Mercer,"That's not an answer.",0
+panel_explosives_05,panel_explosives,Hale,"It's the one I've got.",0
+children_go_01,children_go,Wife,"I'll get the boys. Close the gate.",0
+kids_in_vault_01,kids_in_vault,Youngest son,"Why are we in here?",0
+kids_in_vault_02,kids_in_vault,Wife,"Because it's the safest room we have. Listen to your dad.",0
+radio_handoff_01,radio_handoff,Hale,"Take this. Channel four. You keep your brothers calm.",0
+radio_handoff_02,radio_handoff,Hale,"Do not open this door. Not for anybody. You only answer to Mom or me.",0
+radio_handoff_03,radio_handoff,Oldest son,"What if somebody says...",0
+radio_handoff_04,radio_handoff,Hale,"Mom. Or me.",0
+radio_handoff_05,radio_handoff,Oldest son,"Mom or Dad. Okay.",0
+radio_handoff_06,radio_handoff,Youngest son,"Dad?",0
+radio_handoff_07,radio_handoff,Hale,"I know, bud. Stay with your brother.",0
+vault_sealed_01,vault_sealed,Wife,"Sealed.",0
+vault_sealed_02,vault_sealed,Hale,"They'll be okay.",0
+vault_sealed_03,vault_sealed,Wife,"I know. Say it anyway.",0
+ncd_engines_01,ncd_engines,Nathan,"Hale. Engines. A lot of them.",0
+ncd_engines_02,ncd_engines,Nathan,"Gate camera.",0
+ncd_cameras_01,ncd_cameras,Sheriff Mercer,"Black SUVs. No plates. No markings.",0
+ncd_cameras_02,ncd_cameras,Wife,"They're not in a hurry.",0
+ncd_cameras_03,ncd_cameras,Nathan,"They don't need to be.",0
+ncd_demand_01,ncd_demand,NCD Command (PA),"Attention, Hale residence. This is the National Continuity Directorate.",0
+ncd_demand_02,ncd_demand,NCD Command (PA),"We are here for Sheriff Mercer, Mayor Vale, and Nathan Cole.",0
+ncd_demand_03,ncd_demand,NCD Command (PA),"Residents of this property are not currently the target of federal action.",0
+ncd_demand_04,ncd_demand,NCD Command (PA),"Disable your property defenses. Open the gate. Send the three men to the road.",0
+ncd_demand_05,ncd_demand,NCD Command (PA),"Mr. Hale. We are aware of the countermeasures on your approach road. Place them in a safe state.",0
+ncd_demand_06,ncd_demand,Mayor Vale,"How do they know your name? How do they know about...",0
+ncd_reveal_01,ncd_reveal,Sheriff Mercer,"Who the hell are these people?",0
+ncd_reveal_02,ncd_reveal,Nathan,"National Continuity Directorate. It's supposed to be part of continuity-of-government planning. Classified.",0
+ncd_reveal_03,ncd_reveal,Nathan,"It operates when the normal structure is considered compromised. Or irrelevant.",0
+ncd_reveal_04,ncd_reveal,Sheriff Mercer,"Who runs it?",0
+ncd_reveal_05,ncd_reveal,Nathan,"Nobody can tell you. No public presence. No oversight anyone can point to. No chain of command on paper.",0
+ncd_reveal_06,ncd_reveal,Nathan,"They're what shows up when the agencies stop mattering.",0
+ncd_reveal_07,ncd_reveal,Mayor Vale,"Then we go out. If it's us they want...",0
+ncd_reveal_08,ncd_reveal,Wife,"You walk out that gate, you don't come back. You know that.",0
+ncd_refusal_01,ncd_refusal,Hale,"Nobody's coming out.",0
+ncd_refusal_02,ncd_refusal,NCD Command (PA),"Understood.",2.5
+column_advancing_01,column_advancing,Wife,"Gate's down. They're coming up the drive!",0
+column_advancing_02,column_advancing,Wife,"Hale. The panel.",0
+defense_armed_01,defense_armed,Hale,"(Approach road: ARMED.)",0
+defense_armed_02,defense_armed,Wife,"Not yet. Let them bunch up at the culvert.",0
+defense_now_01,defense_now,Wife,"They're stopping. They're dismounting. Now.",0
+after_blast_01,after_blast,Sheriff Mercer,"My God.",0
+after_blast_02,after_blast,Nathan,"That won't stop them. They'll regroup.",0
+after_blast_03,after_blast,Wife,"Movement at the wrecks. Hale, drop the wall!",0
+wave1_01,wave1,Wife,"Stay low between shots. The plate is your friend.",0
+wave1_02,wave1,Sheriff Mercer,"I've got the left side of the drive.",0
+wave2_01,wave2,Sheriff Mercer,"More vehicles on the drive!",0
+wave2_02,wave2,Nathan,"Tree line, west side! They're moving in the trees!",0
+wave3_01,wave3,Nathan,"They're moving down the east side of the shop!",0
+wave3_02,wave3,Wife,"East window! Hale, swing right, I've got the port!",0
+wave4_01,wave4,Sheriff Mercer,"More of them. There's more of them.",0
+wave4_02,wave4,Mayor Vale,"We can't hold this. Hale, we can't hold this!",0
+wave4_03,wave4,Wife,"Armored. Two of them.",0
+wave4_radio_01,wave4_radio,Oldest son (radio),"Dad? It's really loud. Are you okay?",0
+wave4_radio_02,wave4_radio,Hale,"Stay put, buddy. Mom or me.",0
+bark_grenade_01,bark_grenade,Wife,"Grenade! Move!",0
+vanguard_hit_01,vanguard_hit,Nathan,"That wasn't us.",0
+vanguard_hit_02,vanguard_hit,Sheriff Mercer,"Who the hell was that?",0
+vanguard_radio_01,vanguard_radio,Wife,"Vehicles in the west field. East field too.",0
+vanguard_radio_02,vanguard_radio,Sheriff Mercer,"More of them?",0
+vanguard_radio_03,vanguard_radio,Nathan,"No. Look who they're shooting at.",0
+commander_reveal_01,commander_reveal,Vanguard Lead,"Residence secure.",2.4
+commander_reveal_02,commander_reveal,Vanguard Lead,"Commander.",2.6
+commander_reveal_03,commander_reveal,Sheriff Mercer,"Commander?",0
+commander_reveal_04,commander_reveal,Mayor Vale,"Hale. Who are these people?",0
+commander_reveal_05,commander_reveal,Vanguard Operator,"We're here to recover anyone at the residence not declared hostile.",0
+commander_reveal_06,commander_reveal,Vanguard Lead,"Your family?",0
+commander_reveal_07,commander_reveal,Hale,"Vault. Three boys.",0
+commander_reveal_08,commander_reveal,Vanguard Lead,"And these three?",0
+commander_reveal_09,commander_reveal,Hale,"They're with us.",0
+commander_reveal_10,commander_reveal,Vanguard Lead,"Then they're non-hostile. Confirmed.",0
+commander_reveal_11,commander_reveal,Vanguard Lead,"Directorate will have a second element inbound. We're not here when it arrives.",0
+family_reunion_01,family_reunion,Youngest son,"Mom!",0
+family_reunion_02,family_reunion,Wife,"Hey, hey. We're okay. We're okay.",0
+family_reunion_03,family_reunion,Oldest son,"Dad. Why did they call you Commander?",0
+family_reunion_04,family_reunion,Hale,"Later.",0
+family_reunion_05,family_reunion,Oldest son,"Dad...",0
+family_reunion_06,family_reunion,Hale,"Later. I promise.",0
+evac_order_01,evac_order,Vanguard Lead,"Mount up. We move now.",0
+evac_order_02,evac_order,Vanguard Operator,"Family in the lead vehicle. Civilians in the second.",0
+scuttle_wife_01,scuttle_wife,Wife,"Everything?",0
+scuttle_wife_02,scuttle_wife,Hale,"Everything.",0
+scuttle_wife_03,scuttle_wife,Wife,"Then do it.",0
+scuttle_after_01,scuttle_after,,"",4
