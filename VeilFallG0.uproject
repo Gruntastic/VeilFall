@@ -31,7 +31,7 @@
 		},
 		{
 			"Name": "MetaHuman",
-			"Enabled": true,
+			"Enabled": false,
 			"SupportedTargetPlatforms": [
 				"Win64",
 				"Linux",
@@ -40,11 +40,11 @@
 		},
 		{
 			"Name": "MetaHumanCoreTech",
-			"Enabled": true
+			"Enabled": false
 		},
 		{
 			"Name": "MetaHumanCoreML",
-			"Enabled": true,
+			"Enabled": false,
 			"SupportedTargetPlatforms": [
 				"Mac",
 				"IOS",
@@ -54,11 +54,11 @@
 		},
 		{
 			"Name": "MetaHumanCharacter",
-			"Enabled": true
+			"Enabled": false
 		},
 		{
 			"Name": "MetaHumanLiveLink",
-			"Enabled": true
+			"Enabled": false
 		}
 	]
 }

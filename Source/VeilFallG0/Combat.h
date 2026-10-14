@@ -178,8 +178,7 @@ public:
  virtual bool Activate_Implementation(APawn* User) override;
  UPROPERTY(VisibleAnywhere) TObjectPtr<UVeilHealthComponent> Health;
  UPROPERTY(VisibleAnywhere) TObjectPtr<UVeilCombatComponent> Combat;
- UPROPERTY(VisibleAnywhere) TObjectPtr<class UStaticMeshComponent> Body;
- UPROPERTY(VisibleAnywhere) TObjectPtr<class UStaticMeshComponent> Head;
+ UPROPERTY(VisibleAnywhere) TObjectPtr<class USkeletalMeshComponent> FirstPersonMesh;
  UPROPERTY(VisibleAnywhere) TObjectPtr<class UStaticMeshComponent> Weapon;
  UPROPERTY(VisibleAnywhere) TObjectPtr<class UStaticMeshComponent> WorldWeapon;
  virtual void RefreshPresentation();
