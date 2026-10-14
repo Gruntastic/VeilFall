@@ -216,6 +216,11 @@ public:
  // Story-critical characters cannot die during the prototype.
  UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="VeilFall") bool bEssential=false;
  UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="VeilFall") bool bHelmet=false;
+ // Children: Game Animation Sample clips (retargeted to the UE5 mannequin) picked by speed,
+ // with idle breaks, an alert variant after the emergency alert, and a crouched huddle in the vault.
+ UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="VeilFall") bool bKidAnimation=false;
+ UPROPERTY(BlueprintReadWrite,Category="VeilFall") bool bAlert=false;
+ UPROPERTY(BlueprintReadWrite,Category="VeilFall") bool bHuddle=false;
  UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="VeilFall") float BodyScale=1;
  // Per-hit damage of this NPC's rifle (0 = project default carbine). Keeps the intro fight about pressure, not one-shot deaths.
  UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="VeilFall") float WeaponDamage=0;
@@ -228,6 +233,7 @@ public:
  bool IsHostileTo(const ACombatCharacter* Other) const;
 private:
  void ApplyAnimation(); bool bDeathPlayed=false;
+ void KidAnimTick(); FTimerHandle KidTimer; double NextBreak=0,BreakUntil=0;
  void EssentialHeal(); FTimerHandle HealTimer;
 };
 

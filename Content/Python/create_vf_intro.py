@@ -471,7 +471,8 @@ def family(role, name, station, colr, scale):
     t = [a for a in actors.get_all_level_actors() if isinstance(a, unreal.VFMarker) and str(a.get_editor_property('marker_id')) == station][0].get_actor_transform()
     l = t.translation
     a = spawn(FAMILY, (l.x, l.y, 110 * scale), t.rotation.rotator().yaw, 'Family_' + role, 'Characters/Family',
-              {'role_id': role, 'display_name': name, 'clothing_color': colr, 'body_scale': scale, 'faction': unreal.VFFaction.FAMILY, 'essential': True})
+              {'role_id': role, 'display_name': name, 'clothing_color': colr, 'body_scale': scale, 'faction': unreal.VFFaction.FAMILY, 'essential': True,
+               'kid_animation': role.startswith('son_')})
     return a
 family('wife', 'your wife', 'wife_kitchen', unreal.LinearColor(.32, .12, .14, 1), .95)
 family('son_oldest', 'your oldest son', 'oldest_living', unreal.LinearColor(.12, .2, .32, 1), .9)

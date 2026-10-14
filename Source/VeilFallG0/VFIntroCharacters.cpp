@@ -5,6 +5,8 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Animation/AnimSequence.h"
 #include "Animation/AnimInstance.h"
+#include "Animation/AnimSingleNodeInstance.h"
+#include "Animation/AnimSequenceBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Navigation/PathFollowingComponent.h"
@@ -61,6 +63,7 @@ void AVFIntroNPC::ApplyAnimation(){
   return;
  }
  bDeathPlayed=false;
+ if(bKidAnimation){if(!GetWorldTimerManager().IsTimerActive(KidTimer)){NextBreak=GetWorld()->GetTimeSeconds()+FMath::FRandRange(6.f,14.f);GetWorldTimerManager().SetTimer(KidTimer,this,&AVFIntroNPC::KidAnimTick,.1f,true);}KidAnimTick();return;}
  const TCHAR* Path=bArmed?TEXT("/Game/Variant_Shooter/Anims/ABP_TP_Rifle.ABP_TP_Rifle_C"):TEXT("/Game/Characters/Mannequins/Anims/Unarmed/ABP_Unarmed.ABP_Unarmed_C");
  UClass* Want=LoadClass<UAnimInstance>(nullptr,Path,nullptr,LOAD_NoWarn|LOAD_Quiet);
  if(Want&&(Body->GetAnimationMode()!=EAnimationMode::AnimationBlueprint||Body->GetAnimClass()!=Want)){Body->SetAnimationMode(EAnimationMode::AnimationBlueprint);Body->SetAnimInstanceClass(Want);}
@@ -259,4 +262,23 @@ void AVFIntroCharacter::RefreshPresentation(){
 void AVFIntroCharacter::SetRiding(USceneComponent* Seat){
  if(Seat){bRiding=true;GetCharacterMovement()->DisableMovement();SetActorEnableCollision(false);AttachToComponent(Seat,FAttachmentTransformRules::SnapToTargetNotIncludingScale);}
  else{bRiding=false;DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);SetActorEnableCollision(true);GetCharacterMovement()->SetMovementMode(MOVE_Walking);}
+}
+
+void AVFIntroNPC::KidAnimTick(){
+ USkeletalMeshComponent* Body=GetMesh();if(!Body||IsHidden()||!IsAlive())return;
+ auto Load=[](const TCHAR* Name)->UAnimationAsset*{return LoadObject<UAnimationAsset>(nullptr,*FString::Printf(TEXT("/Game/VeilFall/Characters/Family/Anims/%s.%s"),Name,Name),nullptr,LOAD_NoWarn|LOAD_Quiet);};
+ const double Now=GetWorld()->GetTimeSeconds();auto* Node=Body->GetSingleNodeInstance();
+ const UAnimationAsset* Playing=Body->GetAnimationMode()==EAnimationMode::AnimationSingleNode&&Node?Node->GetAnimationAsset():nullptr;
+ auto Play=[&](UAnimationAsset* Asset,bool bLoop){if(!Asset){UE_LOG(LogTemp,Warning,TEXT("VF_KID_ANIM missing asset for %s"),*RoleId.ToString());return;}if(Playing!=Asset){Body->PlayAnimation(Asset,bLoop);Playing=Asset;Node=Body->GetSingleNodeInstance();UE_LOG(LogTemp,Display,TEXT("VF_KID_ANIM %s -> %s node=%d"),*RoleId.ToString(),*Asset->GetName(),Node!=nullptr);}};
+ if(bHuddle){Play(Load(TEXT("A_VF_Kid_Crouch_Idle")),true);return;}
+ const float Speed=GetVelocity().Size2D()/FMath::Max(.3f,BodyScale);
+ if(Now<BreakUntil&&Speed<20)return;
+ if(!bAlert&&Speed<5&&Now>=NextBreak){
+  static const TCHAR* Breaks[]={TEXT("A_VF_Kid_IdleBreak_01"),TEXT("A_VF_Kid_IdleBreak_02"),TEXT("A_VF_Kid_IdleBreak_03")};
+  if(auto* Break=Cast<UAnimSequenceBase>(Load(Breaks[FMath::RandRange(0,2)]))){Body->PlayAnimation(Break,false);UE_LOG(LogTemp,Display,TEXT("VF_KID_ANIM %s -> %s (break)"),*RoleId.ToString(),*Break->GetName());BreakUntil=Now+Break->GetPlayLength()-.2f;NextBreak=BreakUntil+FMath::FRandRange(10.f,22.f);return;}
+ }
+ // Pick the clip by speed and match the stride with play rate (relaxed walk ~170 cm/s, run ~400 cm/s at full size).
+ const bool bRun=Speed>=320,bWalk=!bRun&&Speed>=25;
+ Play(Load(bRun?(bAlert?TEXT("A_VF_Kid_Run_Alert_F"):TEXT("A_VF_Kid_Run_F")):bWalk?TEXT("A_VF_Kid_Walk_F"):(bAlert?TEXT("A_VF_Kid_Idle_Alert"):TEXT("A_VF_Kid_Idle"))),true);
+ if(Node)Node->SetPlayRate(bRun?FMath::Clamp(Speed/400.f,.7f,1.5f):bWalk?FMath::Clamp(Speed/170.f,.6f,1.6f):1.f);
 }

@@ -121,7 +121,8 @@ void AVFMissionController::SetStateValue(EVFIntroState V){
  State=V;StateStart=GetWorld()->GetTimeSeconds();UE_LOG(LogTemp,Display,TEXT("VF_INTRO_STATE %s"),*StateName(V));
  KeypadPrompt();OnStateChanged.Broadcast(V);ReceiveStateEntered(V);
 #if !UE_BUILD_SHIPPING
- if(FParse::Param(FCommandLine::Get(),TEXT("VFCapture")))After(4.5f,[this]{if(auto* C=GetWorld()->GetFirstPlayerController())C->ConsoleCommand(TEXT("Shot SHOWUI"));UE_LOG(LogTemp,Display,TEXT("VF_CAPTURE %s"),*StateName(State));});
+ if(FParse::Param(FCommandLine::Get(),TEXT("VFCapture")))After(4.5f,[this]{FString Look;if(FParse::Value(FCommandLine::Get(),TEXT("VFLookAt="),Look))if(auto* N=NPC(FName(*Look)))if(auto* P=Player()){FVector Eye;FRotator R;P->GetActorEyesViewPoint(Eye,R);P->GetController()->SetControlRotation((N->GetActorLocation()-Eye).Rotation());}
+  if(auto* C=GetWorld()->GetFirstPlayerController())C->ConsoleCommand(TEXT("Shot SHOWUI"));UE_LOG(LogTemp,Display,TEXT("VF_CAPTURE %s"),*StateName(State));});
 #endif
 }
 void AVFMissionController::SpawnBlast(const FVector& At,float Scale,bool bFire,bool bSound){
@@ -235,6 +236,7 @@ void AVFMissionController::ArrangeWorld(EVFIntroState V){
  else if(At(S::NCD_ARRIVAL,S::EXTRACT_FAMILY))Kids(TEXT("vault_"));
  else if(V==S::EVACUATE)Kids(TEXT("kids_shop_"));
  else for(const FName& K:Sons())HideNPC(K,true);
+ for(const FName& K:Sons())if(auto* N=NPC(K)){N->bAlert=int32(V)>=int32(S::EMERGENCY_ALERT);N->bHuddle=At(S::NCD_ARRIVAL,S::EXTRACT_FAMILY);}
  static const TMap<S,FName> WifeStations{{S::NORMAL_HOME,"wife_kitchen"},{S::EMERGENCY_ALERT,"wife_kitchen"},{S::MOVE_TO_SHOP,"wife_kitchen"},{S::OPEN_VAULT,"wife_vault"},{S::EQUIP,"wife_vault"},{S::LOCALS_ARRIVE,"wife_vault"},
   {S::SECURE_CHILDREN,"wife_shop"},{S::NCD_ARRIVAL,"wife_shop"},{S::NCD_DEMAND,"wife_shop"},{S::DEFENSE_ARMED,"wife_shop"},{S::PROPERTY_ATTACK,"wife_shop"},{S::HOLD_SHOP,"wife_port"},{S::VANGUARD_ARRIVAL,"wife_port"},{S::EXTRACT_FAMILY,"wife_port"},{S::EVACUATE,"wife_kids"}};
  if(const FName* W=WifeStations.Find(V))PlaceNPC(WIFE,*W);else HideNPC(WIFE,true);
@@ -380,7 +382,7 @@ void AVFMissionController::OnInteract(AActor* Source,FName Id,APawn* User){
  if(Id=="vault.keypad"){
   if(State==S::SECURE_CHILDREN){if(auto* D=Prop("vault_door"))D->SetOpen(false);Lines("vault_sealed",[this]{Go(S::NCD_ARRIVAL);});return;}
   if(State==S::EXTRACT_FAMILY){bVaultOpening=true;if(auto* D=Prop("vault_door"))D->SetOpen(true);After(1.8f,[this]{
-   int32 i=1;for(const FName& K:Sons())SendNPC(K,FName(*FString::Printf(TEXT("kids_shop_%d"),i++)));SendNPC(WIFE,"wife_kids");
+   int32 i=1;for(const FName& K:Sons()){if(auto* N=NPC(K))N->bHuddle=false;SendNPC(K,FName(*FString::Printf(TEXT("kids_shop_%d"),i++)));}SendNPC(WIFE,"wife_kids");
    After(3.5f,[this]{Lines("family_reunion",[this]{Go(S::EVACUATE);});});});return;}
  }
  if(Id=="evac.board"){Board();return;}
@@ -406,6 +408,7 @@ void AVFMissionController::Enter(EVFIntroState V){
   After(1.5f,[this]{Lines("opening");});
   break;
  case S::EMERGENCY_ALERT:
+  for(const FName& K:Sons())if(auto* N=NPC(K))N->bAlert=true;
   if(auto* TV=Item("home.tv"))TV->SetScreenText(TEXT("NATIONAL EMERGENCY ALERT\nSHELTER IN PLACE IMMEDIATELY"),FLinearColor(1,.2f,.15f));
   if(AlertLoaded)for(int32 i=0;i<3;++i)After(i*2.7f,[this]{UGameplayStatics::PlaySound2D(this,AlertLoaded,.8f);});
   if(C&&C->HUD)C->HUD->ShowAlert(true);
@@ -440,7 +443,7 @@ void AVFMissionController::Enter(EVFIntroState V){
   if(auto* D=Prop("gate"))D->SetOpen(false);
   Lines("children_go",[this]{
    SendNPC(WIFE,"wife_hall",[this]{
-    int32 i=1;for(const FName& K:Sons())SendNPC(K,FName(*FString::Printf(TEXT("vault_%d"),i++)));
+    int32 i=1;for(const FName& K:Sons())SendNPC(K,FName(*FString::Printf(TEXT("vault_%d"),i++)),[this,K]{if(auto* N=NPC(K))N->bHuddle=true;});
     SendNPC(WIFE,"wife_vault",[this]{bKidsInVault=true;Objective(TEXT("Give your oldest son the radio."));Lines("kids_in_vault");});});});
   break;
  case S::NCD_ARRIVAL:{
