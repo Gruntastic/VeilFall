@@ -1,0 +1,54 @@
+[
+  {
+    "name": "Carbine",
+    "triangles": 1040,
+    "uv_layers": 1,
+    "meters": [
+      0.10000000149011612,
+      0.9799999594688416,
+      0.35500001907348633
+    ],
+    "bones": 0,
+    "license": "Original procedural project source; no third-party inputs",
+    "forward": "Blender -Y; Unreal import force-front-X"
+  },
+  {
+    "name": "Wall",
+    "triangles": 432,
+    "uv_layers": 1,
+    "meters": [
+      4.0,
+      0.2199999988079071,
+      3.0
+    ],
+    "bones": 0,
+    "license": "Original procedural project source; no third-party inputs",
+    "forward": "Blender -Y; Unreal import force-front-X"
+  },
+  {
+    "name": "Enemy_Static",
+    "triangles": 1620,
+    "uv_layers": 1,
+    "meters": [
+      1.4299999475479126,
+      0.3149999976158142,
+      1.809999942779541
+    ],
+    "bones": 0,
+    "license": "Original procedural project source; no third-party inputs",
+    "forward": "Blender -Y; Unreal import force-front-X"
+  },
+  {
+    "name": "Enemy_Rig",
+    "triangles": 1620,
+    "uv_layers": 1,
+    "meters": [
+      1.4299999475479126,
+      0.3149999976158142,
+      1.809999942779541
+    ],
+    "bones": 17,
+    "license": "Original procedural project source; no third-party inputs",
+    "forward": "Blender -Y; Unreal import force-front-X"
+  }
+]

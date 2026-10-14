@@ -1,0 +1,22 @@
+# Gates
+G0 acceptance requires clean editor compilation, genuine generated test map, package launch, input/interaction review and separate-process network evidence.
+G0 advance authorized October 3, 2026 after user manual input pass; mouse sensitivity tuning deferred. G1 accepted October 3, 2026 for VF-G1-20261003-A after automated verification and user manual testing/pacing review with no errors observed: compact authored route, objective state, Hostile → Cleared → Power Restored → Established, save/reload.
+G2 combat; G3 AI/co-op; G4 benchmark art; G5 integration; G6 content lock; G7 optimization; G8 polish; G9 AI evaluation.
+No full mission/content expansion in this build.
+
+G2 implementation authorized by Continue after G1 manual acceptance. VF-G2-20261003-A is in verification, with separate G2 map and four weapon data assets, combat/armor/reload and down/recovery channels. G2 human combat review remains pending; do not advance to G3 solely from source files, renders or diagnostic logs.
+G2 candidate verification completed: editor build, eight engine tests, genuine map/assets, Windows package, URL-free launch, reviewed DX12 capture and four-process combat checks at baseline/100 ms 2%/200 ms 5% plus rendered baseline passed. Evidence: G2Evidence.md. G2 acceptance still awaits human combat review and documented co-op revive limitations.
+
+G3 progression authorized by the user's G2 review and explicit request. Candidate VF-G3-20261003-A adds squad roles/perception/navigation/BT/EQS, durable field loot/recovery/banking, encounter clear requirements and lifecycle diagnostics. Eleven engine tests and live Editor AI diagnostic have passed. Windows package and separate-process validation are being executed; final status is recorded in G3Evidence.md. Human G3 combat/co-op review remains required before G4 art work.
+
+Final G3 candidate verification passed: eleven engine fixtures, actual G3 editor asset creation, Windows Development build/full cook/package, URL-free launch, packaged AI in NullRHI and DX12, and four-process lifecycle at baseline/100 ms 2%/200 ms 5% plus rendered baseline. See G3Evidence.md. Automated candidate is reviewable; human G3 route/combat/co-op acceptance is pending. Next gate after acceptance: G4 approved weapon/wall/enemy benchmark sources and validation/import. Recon sensor remains a slice integration item, explicitly unimplemented; no final content-set completion claim.
+
+2026-10-04: User reports mouse settings corrected and all things working as expected. G3 review accepted based on that report; automated evidence remains G3Evidence.md. This does not add measured performance or undocumented multiplayer test coverage. G4 is authorized with short-burst sprint/heavy breathing and player cover added to the approved weapon/wall/enemy benchmark work.
+
+2026-10-05: G4 implemented as a separate review candidate with original editable weapon/wall/enemy benchmarks, real Unreal import, short sprint/fatigue feedback and free crouch/lean cover. Automated execution and build-specific results are in G4Evidence.md. G4 is not closed until human art/movement/audio review and remaining validation are accepted; G5 content batching/integration has not started.
+
+2026-10-05: User reports the G4 C build passed and lean is great. This is acceptance of the reviewed lean/build behavior, not new art/audio/performance measurements. Requested low-cover peeking/control changes are implemented for a separate E review candidate. G5 integration has not started.
+
+2026-10-05 G5 preparation: user reports G4 E testing passed and requests mission authoring access. Real L_DeadSignal_G5_Workshop, DA_DeadSignal_G5, BP_Player_G5 and BP_OperationDeadSignal_G5 now exist. Workshop preserves the 400 x 600 m route and gameplay anchors; initial edits focus on HQ/residential opening. Waist-cover limit 90 cm and jump gravity 1.75/speed 520 are editable defaults. This begins G5 preparation; complete art/animation/audio/journal integration and G5 acceptance remain outstanding.
+
+G5 starter D verification: actual editor build and Windows package passed; 15 engine tests passed; separate-process baseline/100 ms 2% plus two 200 ms 5% cover runs and four-player stress persistence passed. Fresh startup capture displays HQ briefing. This is an authoring starter, not complete G5 integration. See G5Evidence.md for corrected failures and unrun human/performance checks.

@@ -1,0 +1,32 @@
+# G3 evidence — VF-G3-20261003-A
+
+Prepared October 3, 2026 (logs cross midnight UTC). Engine UE 5.8.3 CL 58210709. User authorized G3 and a 50% mouse increase after saying the prior candidate looked good. Source sensitivity is 0.36 degrees/count. Earlier maps/packages and campaign saves are preserved. G3 human acceptance remains pending.
+
+| Operation actually run | Result | Evidence |
+|---|---|---|
+| Final Editor module compilation | PASS, incremental build | Logs/G3-Build.log, Result: Succeeded |
+| Eleven engine automation tests | PASS, zero failed test results | Logs/G3-Tests.log |
+| Genuine G3 map/mission and three loot assets created in editor | PASS; zero commandlet errors | Logs/G3-Map.log, G3_MAP_SUCCESS |
+| Final Windows Development compilation/cook/stage/archive | PASS, exit 0 | Logs/G3-Package.log, BUILD SUCCESSFUL |
+| URL-free packaged default launch | PASS, G3 map and pawn, exit 0 | Logs/G3-DefaultLaunch.log and G3-DefaultLaunch-Result.txt |
+| Packaged AI, NullRHI normal clock | PASS | Logs/G3-AI-20261003-233217/Result.txt |
+| Packaged AI, rendered DX12 | PASS | Logs/G3-AI-20261003-233408/Result.txt, Captures/G3-Relay.png |
+| Four-process lifecycle baseline | PASS | Logs/G3-Network-20261003-233238/Result.txt |
+| Four-process lifecycle, configured 100 ms RTT / 2% directional loss | PASS | Logs/G3-Network-20261003-233255/Result.txt |
+| Four-process lifecycle, configured 200 ms RTT / 5% directional loss | PASS | Logs/G3-Network-20261003-233315/Result.txt |
+| Four-process lifecycle rendered DX12 baseline | PASS | Logs/G3-Network-20261003-233337/Result.txt |
+| Project PowerShell tooling syntax | PASS | Logs/G3-ToolingSyntax.txt |
+
+Each final lifecycle run uses a listen host and guests in separate packaged processes. Two guests race actual owned interaction RPCs for one pickup: exactly one receives it. A teammate performs the actual three-second revival channel, reaching 50 HP and spending exactly one medical charge while field loot is retained. A second training down/shortened bleed causes death and one uniquely identified pack. A late guest sees the replicated record and matching real actor. Claiming removes the pack once; banking persists one stash item. A fifth connection is rejected. The winner acquires another field item; its process is terminated, the server logs logout and verifies old-pawn cleanup (three remaining player pawns), with exactly one disconnect pack. A new guest receives the stash/pack state. The host is restarted and a fresh guest receives the same persisted pack GUID and stash. Each run asserts exactly two drops and one pack claim. Both guests attempt fire RPCs on unowned peer components; all authoritative accepted-shot counts remain zero and ammo is valid.
+
+Configured impairment applies PktLag=RTT/2 and outgoing PktLoss at each endpoint. This is engine packet emulation, not measured ping or total roundtrip loss. The harness injects placement/aim and shortens a training bleed deadline; it is not physical input, locomotion or full-route feel evidence. Save roots are isolated per run. The earlier baseline 231826 passed on an earlier candidate and is not used as final-binary evidence.
+
+The packaged AI run starts six real native Behavior Trees. Native startup logs two valid 55×55×10 m navigation bounds and builds RecastNavMesh-Default. The relay diagnostic requires three completed EQS queries, at least one enemy moving >100 cm, fresh sightings for all three roles and actual hostile player health reduction. The final NullRHI run records eqs=3, moved=2, roleSightings=3, HP=50. Four actual blocking collision boxes then obscure sight; the player moves beyond sight range. All three enemies keep the last observed location and fire no additional shots during the measured blocked interval. A diagnostic shield after the first successful hit preserves the player for that check; it is not ordinary gameplay invulnerability. The DX12 screenshot was opened and reviewed: it is a real primitive relay render with readable temporary HUD, not final art or human gameplay evidence. Labels overlap in the distance and retain gate names; presentation polish remains.
+
+The eleven fixtures cover foundation interaction/input math; ordered mission/outpost/atomic backup restore; combat ownership, cadence, armor/hit regions, oblique muzzle traces, barrel obstruction, ammo/reload/loadout and revive charges; loot claim uniqueness, death packs, banking, failed-save rollback, real schema 1 migration, persisted pack IDs/stash/enemy/pickup records, sight expiry and exclusive cover reservations. Schema migration reads Content/Tests/LegacyG1.vfs, copied from an actual historical isolated G1 save. Synthetic fixtures are not substituted for packaged lifecycle evidence.
+
+Failures retained: Logs/G3-AI-20261003-231850/Failure.txt (first packaged guards crouched before sight and navigation unavailable); Logs/G3-AI-20261003-232500/Failure.txt (sight/damage fixed, navigation still unavailable); G3-AIEditor-CrouchFailure.log; G3-Tests-ObliqueFixtureFailure.log (test incorrectly used reset protection, corrected by creating a fresh target). Muzzle endpoint precision, idle peeking and explicit native bounded navigation initialization were fixed and rerun. Engine cleanup still emits a CrowdManager missing-Recast warning after world teardown; active gameplay navigation and EQS pass. The installed newer compiler and engine Character deprecation warnings remain documented.
+
+Final game binary SHA256: 5971148081DFD4E70D0A6AA8BA8859EF266DD675F8A54C641268F688A26B084F. Logs/G3-ArtifactHashes.txt also records launcher, containers, map and legacy fixture. Current bootstrap is Scripts/G3.ps1 Bootstrap. Current build is not claimed as a fresh-cache clean compilation; it is an actual successful incremental Editor build and Windows build/full cook with fresh staging. G0 clean foundation evidence remains historical.
+
+NOT RUN: physical G3 mouse/input check, human hostile encounter/co-op route feel, final mission duration, manual alternate-approach fairness, packaged aimed head/limb matrix, concurrent multiple revivers, host termination while a guest holds unbanked session items, four-player combat-heavy profiling, measured network RTT/bandwidth, WAN matchmaking, power-loss injection, production art/audio/animation/VFX approval. Recon sensor is not implemented. No paid generation, purchase, external publication or production-ready claim.

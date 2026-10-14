@@ -1,0 +1,15 @@
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+Builds/
+.vs/
+*.sln
+*.slnx
+__pycache__/
+Build/*/FileOpenOrder/
+work/
+Docs/Logs/**/IsolatedSave/
+
+# Local run logs
+Docs/Logs/

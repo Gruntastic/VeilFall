@@ -1,0 +1,3 @@
+asset,source,tool,license,export_preset,verification
+ScaleCube_Validated,Original AI-authored procedural cube,Blender 5.2.2 LTS,Original project source,Scripts/Blender/export_validated.py,Unreal bounds 100cm all axes; warning-free import
+ForwardMarker_Validated,Original AI-authored asymmetric tetrahedron,Blender 5.2.2 LTS,Original project source,Scripts/Blender/export_validated.py,Blender -Y forward maps Unreal +X and +Z preserved with force-front-X import

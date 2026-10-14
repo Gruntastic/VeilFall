@@ -1,0 +1,13 @@
+# Asset standards
+Blender is editable source; units meters, +Z up, Unreal centimeters. One 1 m cube must import with 100 cm bounds; orientation benchmark uses +X Unreal forward.
+Store .blend source, export settings, tool versions, provenance, license and import options. Native assets must be created by editor; never rename text to .uasset/.umap.
+FBX selected mesh export: apply scale, -Y forward, Z up, no leaf bones; verify actual imported orientation and dimensions rather than assume preset correct.
+Validate cleanup, UVs, shading, rigs, collision, materials, scale and measured budget before batching one weapon/wall/enemy benchmark.
+PBR library, trims, instances and decals; bounded PCG only after path exclusions. Niagara cosmetic. Audio provenance, attenuation and concurrency required.
+No generation credits spent. One-meter cube and forward/up marker roundtrip passed with explicit force-front-X import, UVs and FACE smoothing; see ImportAndExport.md. This is not production art approval.
+Binary assets use LFS and lock guidance: git lfs install --local (explicit setup), git lfs lock <path> before editing when remote supports locks; unlock after integration. Existing parent rules preserved.
+G2 combat assets are native data assets and Unreal BasicShapes prototypes created by the editor tool. No Meshy/Higgsfield/generated artwork or Blender weapon/enemy source is implied. Authored models and skeletal benchmarks remain G4.
+
+G3 map, mission definition and three loot data assets were created by the actual editor commandlet. Squad bodies, cover walls, supply pickups and recovery packs are Unreal primitive prototypes. Native transient AI trees/queries are not .uasset deliverables. Content/Tests/LegacyG1.vfs is an immutable test fixture copied from a real isolated G1 save; no personal/account data or credentials. No paid generation, external publishing or asset purchase.
+
+G4 benchmark assets are original locally generated Blender geometry, with real exported .blend/FBX, UVs, applied scale, bevel shading and basic rigid-weight rig. Import assertions check dimensions; a fresh-process reload verifies the skeleton dependency is actually saved. Enemy animations, retargeting, physics/ragdoll setup, final UV density and silhouette approval remain unfinished. Four simple PBR materials are real assets; mesh slots currently use uniform benchmark materials and have no production texture detail, trims/decals or material-instance hierarchy. Original temporary breathing WAV is synthetic, not a recording; one active loop per pawn with attenuation. WAV files now follow local LFS/locking patterns. No Meshy/Higgsfield or paid AI assets used.

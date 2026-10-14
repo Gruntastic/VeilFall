@@ -1,0 +1,2 @@
+using UnrealBuildTool;
+public class VeilFallG0EditorTarget : TargetRules { public VeilFallG0EditorTarget(TargetInfo Target):base(Target) { Type=TargetType.Editor; DefaultBuildSettings=BuildSettingsVersion.V7; IncludeOrderVersion=EngineIncludeOrderVersion.Unreal5_8; ExtraModuleNames.Add("VeilFallG0"); } }
