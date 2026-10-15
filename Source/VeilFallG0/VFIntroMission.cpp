@@ -347,7 +347,9 @@ void AVFMissionController::OnInteract(AActor* Source,FName Id,APawn* User){
  const FString Str=Id.ToString();
  if(Str.StartsWith("talk.")){
   Talked.Add(Id);
-  if(State==S::NORMAL_HOME){Lines(FName(*Str.Replace(TEXT("."),TEXT("_"))));TryAlert(false);return;}
+  // The wife's conversation is cut off by the national alert; the sons are optional beforehand.
+  if(State==S::NORMAL_HOME&&Id=="talk.wife"){bAlertQueued=true;Lines("talk_wife",[this]{Go(S::EMERGENCY_ALERT);});return;}
+  if(State==S::NORMAL_HOME){Lines(FName(*Str.Replace(TEXT("."),TEXT("_"))));return;}
   if(Id=="talk.nathan"){Lines("locals_nathan_aside");return;}
   if(Id=="talk.son_oldest"&&State==S::SECURE_CHILDREN){bRadioGiven=true;KeypadPrompt();Lines("radio_handoff",[this]{Objective(TEXT("Seal the vault."));});return;}
   return;

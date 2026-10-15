@@ -279,7 +279,10 @@ line('TreeLineWest', (1000, -6900), (23500, -6900), spacing=700, rows=2, seed=3)
 line('TreeLineEast', (3500, 6800), (20500, 6800), spacing=700, rows=2, seed=5)
 line('TreeLineBack', (-5200, -11500), (-5200, 11500), spacing=650, rows=3, seed=9)
 line('TreeLineRoadWest', (24000, -11500), (24000, -2500), spacing=900, rows=1, seed=11)
-line('LaneTrees', (3000, 2700), (11000, 2700), spacing=1600, rows=1, jitter=120, seed=13)
+# Driveway tree rows, both sides, set back ~17 m from the gravel so the firing ports still see straight down the drive.
+# The first ~30 m from the shop stays open; the rows start at the barn/shed line.
+line('DrivewayTreesWest', (3500, -650), (23500, -650), spacing=650, rows=1, jitter=120, seed=13)
+line('DrivewayTreesEast', (3500, 2850), (23500, 2850), spacing=650, rows=1, jitter=120, seed=21)
 line('YardTrees', (-1800, -3600), (2600, -3600), spacing=1100, rows=1, jitter=200, seed=17)
 line('YardTreesEast', (-2600, 3400), (-600, 5200), spacing=900, rows=1, jitter=150, seed=19)
 # Rural utilities.

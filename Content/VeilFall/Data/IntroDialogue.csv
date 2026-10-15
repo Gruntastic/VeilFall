@@ -4,7 +4,7 @@ talk_wife_01,talk_wife,Wife,"Coffee's still warm. Did you get the north fence do
 talk_wife_02,talk_wife,Hale,"Most of it. The post by the culvert needs resetting.",0
 talk_wife_03,talk_wife,Wife,"The boys want to ride out to the creek after lunch. I told them to ask their father.",0
 talk_wife_04,talk_wife,Hale,"So they're asking me because you said yes.",0
-talk_wife_05,talk_wife,Wife,"I said maybe. You get to be the hero.",0
+talk_wife_05,talk_wife,Wife,"I said maybe. You get to be the—",1.4
 talk_son_oldest_01,talk_son_oldest,Oldest son,"Dad, can I take the side-by-side to the back pasture later? I'll take these two.",0
 talk_son_oldest_02,talk_son_oldest,Hale,"Helmets. Stay off the creek bank. Back before dark.",0
 talk_son_oldest_03,talk_son_oldest,Oldest son,"Yes sir.",0
