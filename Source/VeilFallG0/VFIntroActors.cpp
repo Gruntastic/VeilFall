@@ -205,11 +205,18 @@ void AVFGreyboxLine::OnConstruction(const FTransform& T){
  Super::OnConstruction(T);Primary->ClearInstances();Secondary->ClearInstances();
  const float Length=End.Size2D();if(Length<1)return;const FVector Dir=End.GetSafeNormal2D();const FVector Side(-Dir.Y,Dir.X,0);const float Yaw=Dir.Rotation().Yaw;
  FRandomStream Rand(Seed);
+ // Sit each instance on an imported Landscape when there is one (greybox ground is flat at Z=0).
+ auto Ground=[this](const FVector& Local)->FVector{
+  if(!bSnapToLandscape||!GetWorld())return Local;const FVector W=GetActorTransform().TransformPosition(FVector(Local.X,Local.Y,0));
+  TArray<FHitResult> Hits;FCollisionQueryParams Q(SCENE_QUERY_STAT(VFGround),true,this);
+  GetWorld()->LineTraceMultiByChannel(Hits,W+FVector(0,0,20000),W-FVector(0,0,20000),ECC_WorldStatic,Q);
+  for(const FHitResult& H:Hits)if(H.GetComponent()&&H.GetComponent()->GetClass()->GetName().Contains(TEXT("Landscape")))return FVector(Local.X,Local.Y,Local.Z+H.ImpactPoint.Z-GetActorLocation().Z);
+  return Local;};
  if(bTrees){
   Primary->SetStaticMesh(EngineShape(TEXT("Cylinder")));Secondary->SetStaticMesh(EngineShape(TEXT("Sphere")));Secondary->SetCollisionEnabled(ECollisionEnabled::NoCollision);
   VF::Paint(Primary,FLinearColor(.09f,.06f,.04f));VF::Paint(Secondary,FLinearColor(.05f,.11f,.04f));
   for(int32 Row=0;Row<FMath::Max(1,Rows);++Row)for(float D=Rand.FRandRange(0,Spacing*.5f);D<Length;D+=Spacing*Rand.FRandRange(.7f,1.3f)){
-   const FVector P=Dir*D+Side*(Row*Spacing*.7f+Rand.FRandRange(-Jitter,Jitter))+Dir*Rand.FRandRange(-Jitter,Jitter)*.5f;
+   const FVector P=Ground(Dir*D+Side*(Row*Spacing*.7f+Rand.FRandRange(-Jitter,Jitter))+Dir*Rand.FRandRange(-Jitter,Jitter)*.5f);
    const float H=Rand.FRandRange(6.f,10.f),W=Rand.FRandRange(.3f,.5f),Crown=Rand.FRandRange(4.5f,7.5f);
    Primary->AddInstance(FTransform(FRotator::ZeroRotator,P+FVector(0,0,H*50),FVector(W,W,H)));
    Secondary->AddInstance(FTransform(FRotator(0,Rand.FRandRange(0,360),0),P+FVector(0,0,H*100+Crown*25),FVector(Crown,Crown*Rand.FRandRange(.8f,1.2f),Crown*.8f)));
@@ -218,7 +225,7 @@ void AVFGreyboxLine::OnConstruction(const FTransform& T){
   Primary->SetStaticMesh(EngineShape(TEXT("Cube")));Secondary->SetStaticMesh(EngineShape(TEXT("Cube")));Secondary->SetCollisionEnabled(ECollisionEnabled::NoCollision);
   VF::Paint(Primary,FLinearColor(.18f,.15f,.12f));VF::Paint(Secondary,FLinearColor(.25f,.22f,.18f));
   const int32 Posts=FMath::Max(1,FMath::CeilToInt(Length/Spacing));const float Step=Length/Posts;
-  for(int32 i=0;i<=Posts;++i)Primary->AddInstance(FTransform(FRotator(0,Yaw,0),Dir*Step*i+FVector(0,0,65),FVector(.14f,.14f,1.3f)));
-  for(int32 i=0;i<Posts;++i)for(float Z:{55.f,110.f})Secondary->AddInstance(FTransform(FRotator(0,Yaw,0),Dir*Step*(i+.5f)+FVector(0,0,Z),FVector(Step/100.f,.05f,.1f)));
+  for(int32 i=0;i<=Posts;++i)Primary->AddInstance(FTransform(FRotator(0,Yaw,0),Ground(Dir*Step*i)+FVector(0,0,65),FVector(.14f,.14f,1.3f)));
+  for(int32 i=0;i<Posts;++i)for(float Z:{55.f,110.f})Secondary->AddInstance(FTransform(FRotator(0,Yaw,0),Ground(Dir*Step*(i+.5f))+FVector(0,0,Z),FVector(Step/100.f,.05f,.1f)));
  }
 }

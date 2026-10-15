@@ -112,6 +112,26 @@ for name, c in PALETTE.items():
 
 def color(name): c = PALETTE[name]; return unreal.LinearColor(c[0], c[1], c[2], 1)
 
+# ------------------------------------------------------------------ landscape material (weight-blended layers, flat colours for now)
+LM = '/Game/VeilFall/Materials/M_VF_Landscape'
+if not assets.does_asset_exist(LM):
+    lm = tools.create_asset('M_VF_Landscape', '/Game/VeilFall/Materials', unreal.Material, unreal.MaterialFactoryNew())
+    blend = MEL.create_material_expression(lm, unreal.MaterialExpressionLandscapeLayerBlend, -300, 0)
+    layers = []
+    for name in ['Grass', 'Pasture', 'Gravel', 'Dirt', 'Asphalt']:
+        li = unreal.LayerBlendInput(); li.set_editor_property('layer_name', name); li.set_editor_property('blend_type', unreal.LandscapeLayerBlendType.LB_WEIGHT_BLEND)
+        li.set_editor_property('preview_weight', 1.0 if name == 'Grass' else 0.0); layers.append(li)
+    blend.set_editor_property('layers', layers)
+    for i, name in enumerate(['Grass', 'Pasture', 'Gravel', 'Dirt', 'Asphalt']):
+        c = PALETTE[name]
+        k = MEL.create_material_expression(lm, unreal.MaterialExpressionVectorParameter, -700, i * 150)
+        k.set_editor_property('parameter_name', name + 'Color'); k.set_editor_property('default_value', unreal.LinearColor(c[0], c[1], c[2], 1))
+        MEL.connect_material_expressions(k, '', blend, 'Layer ' + name)
+    MEL.connect_material_property(blend, '', unreal.MaterialProperty.MP_BASE_COLOR)
+    r = MEL.create_material_expression(lm, unreal.MaterialExpressionConstant, -300, 300); r.set_editor_property('r', 0.9)
+    MEL.connect_material_property(r, '', unreal.MaterialProperty.MP_ROUGHNESS)
+    MEL.recompile_material(lm); assets.save_loaded_asset(lm)
+
 # ------------------------------------------------------------------ dialogue table
 DT = '/Game/VeilFall/Data/DT_VF_IntroDialogue'
 row = unreal.load_object(None, '/Script/VeilFallG0.VFDialogueLine')
@@ -253,18 +273,26 @@ def line(name, start, end, trees=True, spacing=600.0, rows=2, jitter=250.0, seed
 
 S = ('VF_Scuttle',)
 # ================================================================== LANDSCAPE & BOUNDARIES (X+ = north toward the road)
-box('Ground', 'Landscape', (11000, 0, -50), (40000, 32000, 100), 'Grass')
-box('PastureWest', 'Landscape', (12000, -7500, 1), (18000, 8000, 2), 'Pasture', collide=False)
-box('PastureEast', 'Landscape', (12000, 8000, 1), (16000, 6000, 2), 'Pasture', collide=False)
+# Real terrain: once a Landscape has been imported (Docs/VeilFall/TerrainAndSky.md) the greybox ground, pasture
+# patches and box mounds are skipped and the landscape gets M_VF_Landscape.
+LANDSCAPES = [a for a in actors.get_all_level_actors() if isinstance(a, unreal.LandscapeProxy)]
+if LANDSCAPES:
+    for l in LANDSCAPES:
+        if not l.get_editor_property('landscape_material'): l.set_editor_property('landscape_material', assets.load_asset('/Game/VeilFall/Materials/M_VF_Landscape'))
+else:
+    box('Ground', 'Landscape', (11000, 0, -50), (40000, 32000, 100), 'Grass')
+    box('PastureWest', 'Landscape', (12000, -7500, 1), (18000, 8000, 2), 'Pasture', collide=False)
+    box('PastureEast', 'Landscape', (12000, 8000, 1), (16000, 6000, 2), 'Pasture', collide=False)
 box('CountyRoad', 'Landscape/Road', (26200, 0, 2), (900, 32000, 4), 'Asphalt')
 box('Driveway', 'Landscape/Road', (12900, 1100, 2), (24200, 650, 4), 'Gravel')
 box('DrivewayBypass', 'Landscape/Road', (14500, 2500, 1), (6000, 400, 2), 'Dirt', collide=False)
 box('ShopApron', 'Landscape/Road', (1650, 1100, 3), (1700, 2600, 6), 'Concrete')
 box('Parking', 'Landscape/Road', (1500, -1300, 2), (1400, 2000, 4), 'Gravel')
-mound('RidgeNE', 14000, 9500, 4000, 2500, 520)
-mound('RiseWest', 9500, -9500, 5000, 2500, 300, 'Pasture')
-mound('GateHill', 21500, 7500, 2500, 2500, 380)
-mound('VaultBerm', -1960, 700, 900, 1800, 300, skip=(0,))  # earth-sheltered vault: no slope toward the shop
+if not LANDSCAPES:  # the heightmap reproduces these hills
+    mound('RidgeNE', 14000, 9500, 4000, 2500, 520)
+    mound('RiseWest', 9500, -9500, 5000, 2500, 300, 'Pasture')
+    mound('GateHill', 21500, 7500, 2500, 2500, 380)
+    mound('VaultBerm', -1960, 700, 900, 1800, 300, skip=(0,))  # earth-sheltered vault: no slope toward the shop
 # Culvert: the landmark the column halts at.
 box('Culvert', 'Landscape/Road', (14400, 1100, 30), (160, 1300, 60), 'Concrete')
 for y in (350, 1850): box('CulvertHeadwall', 'Landscape/Road', (14400, y, 50), (260, 120, 100), 'Concrete')
@@ -489,6 +517,10 @@ sun = spawn(unreal.DirectionalLight, (0, 0, 5000), 35, 'Sun', 'Lighting', pitch=
 sun.light_component.set_editor_property('intensity', 7.0)
 sky = spawn(unreal.SkyLight, (0, 0, 5000), 0, 'SkyLight', 'Lighting'); sky.light_component.set_editor_property('real_time_capture', True)
 spawn(unreal.SkyAtmosphere, (0, 0, 0), 0, 'Atmosphere', 'Lighting')
+spawn(unreal.VolumetricCloud, (0, 0, 0), 0, 'Clouds', 'Lighting')
+for k, v in [('atmosphere_sun_light', True), ('cast_cloud_shadows', True)]:
+    try: sun.light_component.set_editor_property(k, v)
+    except Exception as e: unreal.log_warning('VF sun %s: %s' % (k, e))
 fog = spawn(unreal.ExponentialHeightFog, (0, 0, 0), 0, 'HeightFog', 'Lighting'); fog.component.set_editor_property('fog_density', 0.006)
 for (x, y, z, inten, col) in [(300, -2000, 290, 25, (1, .85, .7)), (350, -700, 290, 25, (1, .85, .7)), (-450, -1200, 280, 15, (1, .85, .7)),
                                (0, 600, 560, 40, (.9, .95, 1)), (0, 1650, 560, 40, (.9, .95, 1)), (-1150, 700, 270, 20, (.85, .9, 1))]:

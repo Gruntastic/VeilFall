@@ -195,6 +195,7 @@ public:
  UPROPERTY(EditAnywhere,Category="VeilFall") float Jitter=250;
  UPROPERTY(EditAnywhere,Category="VeilFall") int32 Rows=2;
  UPROPERTY(EditAnywhere,Category="VeilFall") int32 Seed=7;
+ UPROPERTY(EditAnywhere,Category="VeilFall") bool bSnapToLandscape=true;
  UPROPERTY(VisibleAnywhere) TObjectPtr<class UInstancedStaticMeshComponent> Primary;
  UPROPERTY(VisibleAnywhere) TObjectPtr<class UInstancedStaticMeshComponent> Secondary;
 };
