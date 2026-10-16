@@ -183,10 +183,10 @@ void AVFScriptedVehicle::Step(){
  }
  for(UStaticMeshComponent* W:Wheels)W->AddLocalRotation(FRotator(0,Speed*StepSeconds*.6f,0));
 }
-void AVFScriptedVehicle::Wreck(AVFMissionController* Mission){
+void AVFScriptedVehicle::Wreck(AVFMissionController* Mission,USoundBase* Sound){
  if(bWrecked)return;Stop();bWrecked=true;Paint();Headlights->SetVisibility(false);
  SetActorRotation(GetActorRotation()+FRotator(FMath::FRandRange(-4.f,4.f),FMath::FRandRange(-20.f,20.f),FMath::FRandRange(-8.f,8.f)));
- if(Mission)Mission->SpawnBlast(GetActorLocation()+FVector(0,0,120),2.6f,true,true);
+ if(Mission)Mission->SpawnBlast(GetActorLocation()+FVector(0,0,120),2.6f,true,true,Sound);
 }
 void AVFScriptedVehicle::Restore(FTransform At){Stop();bWrecked=false;SetActorTransform(At);Headlights->SetVisibility(true);Paint();}
 FVector AVFScriptedVehicle::Dismount(int32 Index)const{

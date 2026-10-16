@@ -173,7 +173,7 @@ public:
  void Drive(const TArray<FVector>& Points,float Speed,TFunction<void()> OnArrive,bool bSlideStop=false);
  void Stop();
  bool IsDriving() const {return Route.Num()>0;}
- UFUNCTION(BlueprintCallable,Category="VeilFall") void Wreck(AVFMissionController* Mission);
+ UFUNCTION(BlueprintCallable,Category="VeilFall") void Wreck(AVFMissionController* Mission,USoundBase* Sound=nullptr);
  UFUNCTION(BlueprintCallable,Category="VeilFall") void Restore(FTransform At);
  FVector Dismount(int32 Index) const;
 private:
@@ -320,6 +320,13 @@ public:
  UPROPERTY(EditAnywhere,Category="VeilFall") TSoftObjectPtr<USoundBase> GunshotSound;
  UPROPERTY(EditAnywhere,Category="VeilFall") TSoftObjectPtr<USoundBase> EngineSound;
  UPROPERTY(EditAnywhere,Category="VeilFall") TSoftObjectPtr<USoundBase> PASound;
+ // Gunshot is the fallback; NPC rifles pick from NPCRifleSounds, the player's carbine/marksman use RifleSound, the pistol PistolSound.
+ UPROPERTY(EditAnywhere,Category="VeilFall") TArray<TSoftObjectPtr<USoundBase>> NPCRifleSounds;
+ UPROPERTY(EditAnywhere,Category="VeilFall") TSoftObjectPtr<USoundBase> RifleSound;
+ UPROPERTY(EditAnywhere,Category="VeilFall") TSoftObjectPtr<USoundBase> PistolSound;
+ UPROPERTY(EditAnywhere,Category="VeilFall") TSoftObjectPtr<USoundBase> RifleReloadSound;
+ UPROPERTY(EditAnywhere,Category="VeilFall") TSoftObjectPtr<USoundBase> RocketLaunchSound;
+ UPROPERTY(EditAnywhere,Category="VeilFall") TSoftObjectPtr<USoundBase> RocketImpactSound;
 
  UFUNCTION(BlueprintCallable,Category="VeilFall|Debug") void JumpToState(EVFIntroState Target);
  UFUNCTION(BlueprintCallable,Category="VeilFall|Debug") void RestartCheckpoint();
@@ -335,7 +342,7 @@ public:
  void OnPawnKilled(AVFIntroNPC* Pawn);
  bool RequestShotToken(AActor* Shooter,AActor* Target);
  void Grenade(const FVector& At,AActor* Source);
- void SpawnBlast(const FVector& At,float Scale,bool bFire=false,bool bSound=true);
+ void SpawnBlast(const FVector& At,float Scale,bool bFire=false,bool bSound=true,USoundBase* Sound=nullptr);
  void PlayShot(const FVector& At);
  void ReserveCover(AVFCoverPoint* Cover,AController* User);
  bool CoverFree(const AVFCoverPoint* Cover,const AController* User) const;
@@ -343,6 +350,8 @@ public:
  bool Talkable(const AVFIntroNPC* NPC) const;
  FText TalkPromptFor(const AVFIntroNPC* NPC) const;
  USoundBase* Gunshot() const {return GunshotLoaded;}
+ USoundBase* PlayerShot(FName Weapon) const;
+ USoundBase* RifleReload() const {return RifleReloadLoaded;}
  USoundBase* Engine() const {return EngineLoaded;}
  void OnPlayerUse();
  FString ForcedPrompt;
@@ -404,6 +413,12 @@ private:
  UPROPERTY() TObjectPtr<USoundBase> GunshotLoaded;
  UPROPERTY() TObjectPtr<USoundBase> EngineLoaded;
  UPROPERTY() TObjectPtr<USoundBase> PALoaded;
+ UPROPERTY() TArray<TObjectPtr<USoundBase>> NPCRifleLoaded;
+ UPROPERTY() TObjectPtr<USoundBase> RifleLoaded;
+ UPROPERTY() TObjectPtr<USoundBase> PistolLoaded;
+ UPROPERTY() TObjectPtr<USoundBase> RifleReloadLoaded;
+ UPROPERTY() TObjectPtr<USoundBase> RocketLaunchLoaded;
+ UPROPERTY() TObjectPtr<USoundBase> RocketImpactLoaded;
  UPROPERTY() TObjectPtr<UDataTable> DialogueLoaded;
  UPROPERTY() TObjectPtr<class USoundAttenuation> ShotAttenuation;
  UPROPERTY() TObjectPtr<class USoundAttenuation> EngineAttenuation;
@@ -451,7 +466,7 @@ private:
  UPROPERTY() TObjectPtr<UTextBlock> Title; UPROPERTY() TObjectPtr<UBorder> KeypadPanel; UPROPERTY() TObjectPtr<UTextBlock> KeypadText;
  UPROPERTY() TObjectPtr<UBorder> DamagePanel; UPROPERTY() TObjectPtr<UTextBlock> GrenadeText; UPROPERTY() TObjectPtr<UTextBlock> DebugText;
  FString Code; bool bKeypad=false,bDebug=false; double SubtitleUntil=0,HintUntil=0,ObjectiveUntil=0,GrenadeUntil=0,LastPromptTrace=0;
- float Fade=0,FadeTarget=0,FadeSpeed=1,Damage=0,AlertFlash=0; int32 LastMagazine=-1; FName LastWeapon;
+ float Fade=0,FadeTarget=0,FadeSpeed=1,Damage=0,AlertFlash=0; int32 LastMagazine=-1; FName LastWeapon; bool bWasReloading=false;
 };
 
 UCLASS()

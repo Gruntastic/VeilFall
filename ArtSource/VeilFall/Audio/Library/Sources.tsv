@@ -55,3 +55,12 @@ Broadcast	SFX_TV_Noise	Retro Vintage Sound FX/Old TV/TV Noise.wav
 Broadcast	SFX_TV_TuningSignal	Retro Vintage Sound FX/Old TV/Tuning TV Signal.wav
 Broadcast	SFX_TV_ButtonOnOff	Retro Vintage Sound FX/Old TV/TV Button ON OFF.wav
 Broadcast	SFX_Warning_Sonar	Complete Elements Sound FX/Sonars/High Tone Sonar Warning.wav
+Weapons	SFX_Gun_Pistol_9mm	Blockbuster Sound FX/Guns/9mm Shot Front.wav
+Weapons	SFX_Gun_Rifle_AutoBurst	Blockbuster Sound FX/Guns/Automatic Rifle Multiple Shots.wav
+Weapons	SFX_Gun_Rifle_CombatBurst	Combat & Warfare Sound FX/Weapons/In Combat Assault Rifle.wav
+Weapons	SFX_Gun_Reload_RifleMag	Combat & Warfare Sound FX/Weapons/Reloading.wav
+Weapons	SFX_Rocket_Launch	Combat & Warfare Sound FX/Weapons/RPG Launch.wav
+Explosions	SFX_Rocket_Impact	Combat & Warfare Sound FX/Weapons/RPG Impact.wav
+Explosions	SFX_Explosion_Hybrid	Blockbuster Sound FX/Explosions/Hybrid Explosion.wav
+Weapons	SFX_Gun_Rifle_Shot	last round of SFX_Gun_Rifle_CombatBurst (slice_rifle_shots.py)
+Weapons	SFX_Gun_Rifle_NPC_01..03	rounds 1, 4, 7 of SFX_Gun_Rifle_AutoBurst (slice_rifle_shots.py)

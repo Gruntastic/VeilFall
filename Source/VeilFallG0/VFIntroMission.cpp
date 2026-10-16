@@ -35,10 +35,16 @@ AVFMissionController::AVFMissionController(){
  PrimaryActorTick.bCanEverTick=false;SetRootComponent(CreateDefaultSubobject<USceneComponent>("Root"));
  Dialogue=TSoftObjectPtr<UDataTable>(FSoftObjectPath(TEXT("/Game/VeilFall/Data/DT_VF_IntroDialogue.DT_VF_IntroDialogue")));
  AlertSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/TEMP_SFX_EmergencyTone.TEMP_SFX_EmergencyTone")));
- ExplosionSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Explosions/SFX_Explosion_Street.SFX_Explosion_Street")));
- GunshotSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Weapons/SFX_Gun_SingleShot.SFX_Gun_SingleShot")));
+ ExplosionSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Explosions/SFX_Explosion_Hybrid.SFX_Explosion_Hybrid")));
+ GunshotSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Weapons/SFX_Gun_Rifle_Shot.SFX_Gun_Rifle_Shot")));
  EngineSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Vehicles/SFX_Vehicle_EngineIdle_Deep.SFX_Vehicle_EngineIdle_Deep")));
  PASound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/TEMP_SFX_PAChime.TEMP_SFX_PAChime")));
+ for(const TCHAR* N:{TEXT("01"),TEXT("02"),TEXT("03")})NPCRifleSounds.Add(TSoftObjectPtr<USoundBase>(FSoftObjectPath(FString::Printf(TEXT("/Game/VeilFall/Audio/Weapons/SFX_Gun_Rifle_NPC_%s.SFX_Gun_Rifle_NPC_%s"),N,N))));
+ RifleSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Weapons/SFX_Gun_Rifle_Shot.SFX_Gun_Rifle_Shot")));
+ PistolSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Weapons/SFX_Gun_Pistol_9mm.SFX_Gun_Pistol_9mm")));
+ RifleReloadSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Weapons/SFX_Gun_Reload_RifleMag.SFX_Gun_Reload_RifleMag")));
+ RocketLaunchSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Weapons/SFX_Rocket_Launch.SFX_Rocket_Launch")));
+ RocketImpactSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Explosions/SFX_Rocket_Impact.SFX_Rocket_Impact")));
 }
 AVFMissionController* AVFMissionController::Get(const UObject* Ctx){
  const UWorld* W=Ctx?Ctx->GetWorld():nullptr;if(!W)return nullptr;
@@ -50,6 +56,9 @@ void AVFMissionController::BeginPlay(){
  Super::BeginPlay();
  DialogueLoaded=Dialogue.LoadSynchronous();AlertLoaded=AlertSound.LoadSynchronous();ExplosionLoaded=ExplosionSound.LoadSynchronous();
  GunshotLoaded=GunshotSound.LoadSynchronous();EngineLoaded=EngineSound.LoadSynchronous();PALoaded=PASound.LoadSynchronous();
+ for(auto& S:NPCRifleSounds)if(auto* L=S.LoadSynchronous())NPCRifleLoaded.Add(L);
+ RifleLoaded=RifleSound.LoadSynchronous();PistolLoaded=PistolSound.LoadSynchronous();RifleReloadLoaded=RifleReloadSound.LoadSynchronous();
+ RocketLaunchLoaded=RocketLaunchSound.LoadSynchronous();RocketImpactLoaded=RocketImpactSound.LoadSynchronous();
  if(!DialogueLoaded)UE_LOG(LogTemp,Error,TEXT("VF_INTRO dialogue table missing: %s"),*Dialogue.ToString());
  for(TActorIterator<AVFMarker> It(GetWorld());It;++It)if(!It->MarkerId.IsNone())Markers.Add(It->MarkerId,*It);
  for(TActorIterator<AActor> It(GetWorld());It;++It)if(It->ActorHasTag("VF_Scuttle"))ScuttleOrigins.Add(*It,It->GetActorTransform());
@@ -125,14 +134,20 @@ void AVFMissionController::SetStateValue(EVFIntroState V){
   if(auto* C=GetWorld()->GetFirstPlayerController())C->ConsoleCommand(TEXT("Shot SHOWUI"));UE_LOG(LogTemp,Display,TEXT("VF_CAPTURE %s"),*StateName(State));});
 #endif
 }
-void AVFMissionController::SpawnBlast(const FVector& At,float Scale,bool bFire,bool bSound){
- auto* B=GetWorld()->SpawnActor<AVFBlastEffect>(AVFBlastEffect::StaticClass(),At,FRotator::ZeroRotator);if(!B)return;Spawned.Add(B);B->Init(Scale,bSound?ExplosionLoaded.Get():nullptr,bFire);
+void AVFMissionController::SpawnBlast(const FVector& At,float Scale,bool bFire,bool bSound,USoundBase* Sound){
+ auto* B=GetWorld()->SpawnActor<AVFBlastEffect>(AVFBlastEffect::StaticClass(),At,FRotator::ZeroRotator);if(!B)return;Spawned.Add(B);B->Init(Scale,bSound?(Sound?Sound:ExplosionLoaded.Get()):nullptr,bFire);
  if(auto* P=Player())if(auto* C=PC())if(C->HUD){const float D=FVector::Dist(P->GetActorLocation(),At);if(D<6000)C->HUD->PulseDamage(FMath::Clamp(.35f*Scale*(1-D/6000),0.f,.4f));}
 }
 void AVFMissionController::PlayShot(const FVector& At){
- if(!GunshotLoaded)return;const double Now=GetWorld()->GetTimeSeconds();if(Now-LastShotSound<.03)return;LastShotSound=Now;
+ USoundBase* Shot=NPCRifleLoaded.IsEmpty()?GunshotLoaded.Get():NPCRifleLoaded[FMath::RandHelper(NPCRifleLoaded.Num())].Get();
+ if(!Shot)return;const double Now=GetWorld()->GetTimeSeconds();if(Now-LastShotSound<.03)return;LastShotSound=Now;
  if(!ShotAttenuation)ShotAttenuation=Attenuation(this,9000);
- UGameplayStatics::PlaySoundAtLocation(this,GunshotLoaded,At,.55f,FMath::FRandRange(.9f,1.08f),0,ShotAttenuation);
+ UGameplayStatics::PlaySoundAtLocation(this,Shot,At,.55f,FMath::FRandRange(.9f,1.08f),0,ShotAttenuation);
+}
+USoundBase* AVFMissionController::PlayerShot(FName Weapon) const{
+ if(Weapon=="weapon.pistol"&&PistolLoaded)return PistolLoaded;
+ if((Weapon=="weapon.carbine"||Weapon=="weapon.marksman")&&RifleLoaded)return RifleLoaded;
+ return GunshotLoaded;
 }
 void AVFMissionController::Grenade(const FVector& At,AActor* Source){
  auto* P=Player();if(!P||FVector::Dist2D(P->GetActorLocation(),At)>1100)return;
@@ -589,8 +604,8 @@ void AVFMissionController::CheckWave(){
 void AVFMissionController::VanguardEnters(){
  // Distant anti-armor shot from the north-east ridge; no weapon detail, only sound and impact.
  bool bF=false;const FTransform Ridge=MarkerTransform("aa_origin",&bF);
- if(bF)SpawnBlast(Ridge.GetLocation(),.35f,false,true);
- After(1.3f,[this]{AVFScriptedVehicle* Target=Vehicle("w4_1");if(!Target)Target=Vehicle("w2_1");if(Target){Target->Wreck(this);for(TActorIterator<AVFIntroNPC> It(GetWorld());It;++It)if(It->Faction==EVFFaction::NCD&&It->IsAlive()&&FVector::Dist(It->GetActorLocation(),Target->GetActorLocation())<700){VF::Kill(It->Health);OnPawnKilled(*It);}}
+ if(bF){SpawnBlast(Ridge.GetLocation(),.35f,false,false);if(RocketLaunchLoaded)UGameplayStatics::PlaySoundAtLocation(this,RocketLaunchLoaded,Ridge.GetLocation(),1.f,1.f,0,Attenuation(this,12000));}
+ After(1.3f,[this]{AVFScriptedVehicle* Target=Vehicle("w4_1");if(!Target)Target=Vehicle("w2_1");if(Target){Target->Wreck(this,RocketImpactLoaded);for(TActorIterator<AVFIntroNPC> It(GetWorld());It;++It)if(It->Faction==EVFFaction::NCD&&It->IsAlive()&&FVector::Dist(It->GetActorLocation(),Target->GetActorLocation())<700){VF::Kill(It->Health);OnPawnKilled(*It);}}
   Lines("vanguard_hit");});
  After(4.f,[this]{
   SpawnVanguard(false);

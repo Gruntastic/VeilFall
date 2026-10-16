@@ -81,7 +81,10 @@ void UVFIntroHUD::NativeTick(const FGeometry& G,float Dt){
   if(Armed){const auto* A=Pawn->Combat->CurrentAmmo();const auto& CS=Pawn->Combat->State;const auto Spec=Pawn->Combat->Spec(Pawn->Combat->EquippedId);
    Status->SetText(FText::FromString(FString::Printf(TEXT("%s  %d / %d%s\nHealth %.0f   Med %d"),*Spec.DisplayName,A?A->Magazine:0,A?A->Reserve:0,CS.bReloading?TEXT("  RELOADING"):TEXT(""),Pawn->Health->State.Health,CS.MedicalCharges)));
    // Player gunshot audio: the combat component has no native sound hook, so watch the magazine.
-   if(A&&Pawn->Combat->EquippedId==LastWeapon&&A->Magazine<LastMagazine&&!CS.bReloading)if(Mission&&Mission->Gunshot())UGameplayStatics::PlaySound2D(this,Mission->Gunshot(),.45f,FMath::FRandRange(.95f,1.05f));
+   if(A&&Pawn->Combat->EquippedId==LastWeapon&&A->Magazine<LastMagazine&&!CS.bReloading)if(Mission)if(auto* Shot=Mission->PlayerShot(Pawn->Combat->EquippedId))UGameplayStatics::PlaySound2D(this,Shot,.45f,FMath::FRandRange(.95f,1.05f));
+   const bool bRifle=Pawn->Combat->EquippedId=="weapon.carbine"||Pawn->Combat->EquippedId=="weapon.marksman";
+   if(CS.bReloading&&!bWasReloading&&bRifle&&Mission&&Mission->RifleReload())UGameplayStatics::PlaySound2D(this,Mission->RifleReload(),.6f);
+   bWasReloading=CS.bReloading;
    LastMagazine=A?A->Magazine:-1;LastWeapon=Pawn->Combat->EquippedId;
   }else Status->SetText(FText());
   static int32 SeenRevision=-1;if(SeenRevision>=0&&Pawn->Health->State.DamageRevision!=SeenRevision)PulseDamage(.7f);SeenRevision=Pawn->Health->State.DamageRevision;

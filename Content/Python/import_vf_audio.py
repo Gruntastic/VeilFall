@@ -1,7 +1,7 @@
 """VEILFALL audio library import: ArtSource/VeilFall/Audio/Library/<Category>/*.wav -> /Game/VeilFall/Audio/<Category>/.
 
-Re-runnable; existing assets are reimported in place. Sources are 48 kHz/16-bit conversions of the licensed D:/SFX packs
-(see Docs/VeilFall/AssetLog.md for the source file of each). Run: Scripts/VFIntro.ps1 Audio
+Re-runnable; only WAVs without an asset yet are imported. Sources are 48 kHz/16-bit conversions of the D:/SFX packs
+(per-file sources in ArtSource/VeilFall/Audio/Library/Sources.tsv). Run: Scripts/VFIntro.ps1 Audio
 """
 import unreal
 from pathlib import Path
@@ -14,6 +14,8 @@ LOOPING = {'SFX_Vehicle_EngineIdle_Deep', 'SFX_Vehicle_ArmyTruck_IdleInside', 'S
 count = 0
 for wav in sorted(SRC.glob('*/*.wav')):
     folder = '/Game/VeilFall/Audio/' + wav.parent.name
+    if assets.does_asset_exist(folder + '/' + wav.stem):
+        continue  # delete the asset first to reimport a changed WAV
     assets.make_directory(folder)
     t = unreal.AssetImportTask()
     t.filename = str(wav); t.destination_path = folder; t.destination_name = wav.stem
@@ -26,4 +28,4 @@ for wav in sorted(SRC.glob('*/*.wav')):
     assets.save_loaded_asset(sw)
     count += 1
 
-unreal.log('VF_AUDIO_IMPORT_SUCCESS %d' % count)
+unreal.log('VF_AUDIO_IMPORT_SUCCESS imported=%d' % count)
