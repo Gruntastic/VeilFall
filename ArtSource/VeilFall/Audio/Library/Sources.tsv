@@ -1,0 +1,57 @@
+Category	Asset	Source file under D:/SFX (converted to 48 kHz 16-bit; mono except Ambience)
+Weapons	SFX_Gun_SingleShot	Combat & Warfare Sound FX/Weapons/Single Gun Shot.wav
+Weapons	SFX_Gun_CarbineShot	Combat & Warfare Sound FX/Weapons/Carbine Shot.wav
+Weapons	SFX_Gun_RifleShot_Sharp	Combat & Warfare Sound FX/Weapons/Sharp Rifle Shot.wav
+Weapons	SFX_Gun_RifleShot_Clear	Combat & Warfare Sound FX/Weapons/Clear Single Shot.wav
+Weapons	SFX_Gun_RifleShot_Clean	Combat & Warfare Sound FX/Weapons/Clean Single Shot.wav
+Weapons	SFX_Gun_RifleBurst	Combat & Warfare Sound FX/Weapons/Burst Shot.wav
+Weapons	SFX_Gun_AssaultRifle	Combat & Warfare Sound FX/Weapons/Assault Rifle Shots.wav
+Weapons	SFX_Gun_DistantSingle	Combat & Warfare Sound FX/Weapons/Far Off Single Shot.wav
+Weapons	SFX_Gun_DistantMachineGun	Combat & Warfare Sound FX/Weapons/Far Off Machine Gun Shots.wav
+Weapons	SFX_Gun_Reload_Rifle	Combat & Warfare Sound FX/Weapons/Rifle Reload.wav
+Weapons	SFX_Gun_Reload_Mags	Combat & Warfare Sound FX/Weapons/Reloading Mags.wav
+Weapons	SFX_Gun_ShellCasings	Combat & Warfare Sound FX/Weapons/Bullet Shells Falling.wav
+Weapons	SFX_Gun_RPG_Launch	Combat & Warfare Sound FX/Bombs/RPG Launch.wav
+Explosions	SFX_Explosion_Street	Combat & Warfare Sound FX/Bombs/Explosion in the Street.wav
+Explosions	SFX_Explosion_Close	Combat & Warfare Sound FX/Bombs/Close Bomb Impact.wav
+Explosions	SFX_Explosion_DeepClose	Combat & Warfare Sound FX/Bombs/Deep Close Explosion.wav
+Explosions	SFX_Explosion_Distant	Combat & Warfare Sound FX/Bombs/Distant Explosion.wav
+Explosions	SFX_Explosion_FarOff	Combat & Warfare Sound FX/Bombs/Explosion Far Off .wav
+Explosions	SFX_Explosion_Massive	Combat & Warfare Sound FX/Bombs/Massive Explosion.wav
+Explosions	SFX_Explosion_RPGImpact	Combat & Warfare Sound FX/Bombs/RPG Impact.wav
+Explosions	SFX_Explosion_Rubble	Combat & Warfare Sound FX/Bombs/Explosion Rubble.wav
+Explosions	SFX_Explosion_Aftermath	Combat & Warfare Sound FX/Bombs/Bomb Aftermath.wav
+Explosions	SFX_Fire_BurningImpacts	Combat & Warfare Sound FX/Bombs/Multiple Impacts Burning.wav
+Vehicles	SFX_Vehicle_EngineIdle_Deep	Cinematic Cars SFX/Cars/Deep Engine Idle.wav
+Vehicles	SFX_Vehicle_ArmyTruck_IdleInside	Combat & Warfare Sound FX/War Vehicles/Inside Idle Army Truck.wav
+Vehicles	SFX_Vehicle_Truck_Rev	Cinematic Cars SFX/Cars/American Truck Rev.wav
+Vehicles	SFX_Vehicle_EngineStart	Blockbuster Sound FX/Cars/Start Engine.wav
+Vehicles	SFX_Vehicle_DoorOpen	Cinematic Cars SFX/Accents/Opening Car Door.wav
+Vehicles	SFX_Vehicle_DoorOpen_Old	Cinematic Cars SFX/Accents/Opening Old Car Door.wav
+Vehicles	SFX_Vehicle_Helicopter_FlyOver	Combat & Warfare Sound FX/War Vehicles/Military Helicopter Fly Over.wav
+Vehicles	SFX_Vehicle_Helicopter_Heavy	Combat & Warfare Sound FX/War Vehicles/Heavy Helicopter Fly.wav
+Vehicles	SFX_Vehicle_Jet_FlyOver	Combat & Warfare Sound FX/War Vehicles/Fighter Jet Fly Over.wav
+Ambience	AMB_Wind_Countryside	Beautiful Nature Sound FX/Wind/Soft Wind Countryside.wav
+Ambience	AMB_Wind_HighGrass	Beautiful Nature Sound FX/Wind/Wind Through High Grass.wav
+Ambience	AMB_Wind_Leaves	Beautiful Nature Sound FX/Wind/Wind Through Leaves.wav
+Ambience	AMB_Birds_Forest	Animals Sound FX/Birds/Birds Forest Ambience.wav
+Ambience	AMB_Birds_Chirping	Animals Sound FX/Birds/Chirping Birds.wav
+Ambience	AMB_Insects_Nearby	Animals Sound FX/Insects/Nearby Insects Ambience.wav
+Ambience	AMB_Crickets_Forest	Beautiful Nature Sound FX/Forest/Crickets in the Forest.wav
+Ambience	AMB_Forest_Sunrise	Beautiful Nature Sound FX/Forest/Forest Ambience Sunrise.wav
+Ambience	AMB_Battle_Distant	Combat & Warfare Sound FX/Combat Ambience/Battlefield Explosion Ambience.wav
+Ambience	AMB_Thunder_FarRumble	Beautiful Nature Sound FX/Thunder/Far Off Rumble.wav
+Animals	SFX_Dog_BarkGarden	Animals Sound FX/Dogs/Dog Bark Garden.wav
+Animals	SFX_Dog_Barking	Animals Sound FX/Dogs/Dog Barking.wav
+Animals	SFX_Dog_BigBark	Animals Sound FX/Dogs/Big Dog Bark.wav
+Animals	SFX_Chicken_Restless	Animals Sound FX/Farm/Restless Chicken.wav
+Animals	SFX_Sheep_Nearby	Animals Sound FX/Farm/Sheep Nearby.wav
+Broadcast	SFX_Radio_On	Retro Vintage Sound FX/Radio/Radio On.wav
+Broadcast	SFX_Radio_Noise	Retro Vintage Sound FX/Radio/Radio Noise.wav
+Broadcast	SFX_Radio_ChatterNoise	Retro Vintage Sound FX/Radio/Radio Chatter Noise.wav
+Broadcast	SFX_Radio_Distort	Retro Vintage Sound FX/Radio/Radio FM Distort.wav
+Broadcast	SFX_Radio_Glitch	Distort & Glitch Sound FX/Glitches/Radio Glitch.wav
+Broadcast	SFX_TV_Noise	Retro Vintage Sound FX/Old TV/TV Noise.wav
+Broadcast	SFX_TV_TuningSignal	Retro Vintage Sound FX/Old TV/Tuning TV Signal.wav
+Broadcast	SFX_TV_ButtonOnOff	Retro Vintage Sound FX/Old TV/TV Button ON OFF.wav
+Broadcast	SFX_Warning_Sonar	Complete Elements Sound FX/Sonars/High Tone Sonar Warning.wav

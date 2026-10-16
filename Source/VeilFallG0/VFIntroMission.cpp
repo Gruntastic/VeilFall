@@ -35,9 +35,9 @@ AVFMissionController::AVFMissionController(){
  PrimaryActorTick.bCanEverTick=false;SetRootComponent(CreateDefaultSubobject<USceneComponent>("Root"));
  Dialogue=TSoftObjectPtr<UDataTable>(FSoftObjectPath(TEXT("/Game/VeilFall/Data/DT_VF_IntroDialogue.DT_VF_IntroDialogue")));
  AlertSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/TEMP_SFX_EmergencyTone.TEMP_SFX_EmergencyTone")));
- ExplosionSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/TEMP_SFX_Explosion.TEMP_SFX_Explosion")));
- GunshotSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/TEMP_SFX_Gunshot.TEMP_SFX_Gunshot")));
- EngineSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/TEMP_SFX_EngineLoop.TEMP_SFX_EngineLoop")));
+ ExplosionSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Explosions/SFX_Explosion_Street.SFX_Explosion_Street")));
+ GunshotSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Weapons/SFX_Gun_SingleShot.SFX_Gun_SingleShot")));
+ EngineSound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/Vehicles/SFX_Vehicle_EngineIdle_Deep.SFX_Vehicle_EngineIdle_Deep")));
  PASound=TSoftObjectPtr<USoundBase>(FSoftObjectPath(TEXT("/Game/VeilFall/Audio/TEMP_SFX_PAChime.TEMP_SFX_PAChime")));
 }
 AVFMissionController* AVFMissionController::Get(const UObject* Ctx){
