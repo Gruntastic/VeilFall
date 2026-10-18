@@ -5,6 +5,7 @@
 #include "MissionWorkshop.h"
 #include "AIController.h"
 #include "Engine/DataTable.h"
+#include "Engine/DataAsset.h"
 #include "GameFramework/GameModeBase.h"
 #include "VFIntro.generated.h"
 
@@ -16,6 +17,7 @@ class AVFMissionController;
 class UTextBlock;
 class UBorder;
 class UCanvasPanel;
+class USoundAttenuation;
 
 UENUM(BlueprintType)
 enum class EVFIntroState : uint8 {
@@ -36,6 +38,32 @@ struct FVFDialogueLine : public FTableRowBase {
  UPROPERTY(EditAnywhere,BlueprintReadOnly) FString Text;
  // 0 = derive from text length.
  UPROPERTY(EditAnywhere,BlueprintReadOnly) float Duration=0;
+};
+
+// Per-weapon sounds shared by the intro and the test range: /Game/VeilFall/Audio/DA_VF_WeaponSounds.
+// Empty entries fall back to the mission controller's sounds in the intro and are silent in the test range.
+USTRUCT(BlueprintType)
+struct FVFWeaponSoundSet {
+ GENERATED_BODY()
+ UPROPERTY(EditAnywhere,BlueprintReadOnly) TSoftObjectPtr<USoundBase> Fire;
+ // NPC shots pick one at random; empty = Fire.
+ UPROPERTY(EditAnywhere,BlueprintReadOnly) TArray<TSoftObjectPtr<USoundBase>> NPCFire;
+ UPROPERTY(EditAnywhere,BlueprintReadOnly) TSoftObjectPtr<USoundBase> Reload;
+ UPROPERTY(EditAnywhere,BlueprintReadOnly) TSoftObjectPtr<USoundBase> Equip;
+};
+UCLASS(BlueprintType)
+class UVFWeaponSounds : public UPrimaryDataAsset { GENERATED_BODY()
+public:
+ // Keys: weapon.carbine, weapon.shotgun, weapon.mg (machine gun), weapon.marksman (sniper rifle), weapon.pistol.
+ UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="VeilFall") TMap<FName,FVFWeaponSoundSet> Weapons;
+ UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="VeilFall|Grenade") TSoftObjectPtr<USoundBase> GrenadeThrow;
+ UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="VeilFall|Grenade") TSoftObjectPtr<USoundBase> GrenadeBounce;
+ UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="VeilFall|Grenade") TSoftObjectPtr<USoundBase> GrenadeExplosion;
+ static UVFWeaponSounds* Get();
+ USoundBase* Fire(FName Weapon,bool bNPC=false) const;
+ USoundBase* Reload(FName Weapon) const;
+ USoundBase* Equip(FName Weapon) const;
+ static FString Label(const TSoftObjectPtr<USoundBase>& Sound){return Sound.IsNull()?FString(TEXT("(none)")):Sound.GetAssetName();}
 };
 
 UINTERFACE(BlueprintType)
@@ -266,6 +294,7 @@ private:
  AVFMissionController* Mission() const;
  FTimerHandle ThinkTimer; TFunction<void()> Arrive; FVector HoldLocation=FVector::ZeroVector; FRotator HoldFacing=FRotator::ZeroRotator;
  TWeakObjectPtr<AVFCoverPoint> Cover; TWeakObjectPtr<ACombatCharacter> Target;
+ UPROPERTY() TObjectPtr<USoundAttenuation> ShotAttenuation;
  double NextFire=0,NextAdvance=0,TargetSince=0,NextGrenade=0,BurstPause=0; FAIRequestID ActiveMove; int32 Burst=0; uint32 Sequence=0; int32 SeenDamage=0; float AdvanceEvery=12; bool bMoving=false;
 };
 
@@ -274,9 +303,12 @@ class AVFGrenade : public AActor { GENERATED_BODY()
 public:
  AVFGrenade();
  UPROPERTY(VisibleAnywhere) TObjectPtr<UStaticMeshComponent> Mesh;
+ UPROPERTY(VisibleAnywhere) TObjectPtr<UStaticMeshComponent> Visual;
  UPROPERTY(VisibleAnywhere) TObjectPtr<class UProjectileMovementComponent> Movement;
  void Launch(const FVector& Velocity,AActor* Thrower);
 private:
+ UFUNCTION() void Bounced(const FHitResult& Hit,const FVector& Velocity);
+ double LastBounce=0;
  void Explode(); FTimerHandle Fuse; TWeakObjectPtr<AActor> Source;
 };
 
@@ -288,6 +320,7 @@ public:
  virtual void BeginPlay() override;
  virtual void SetupPlayerInputComponent(UInputComponent* Input) override;
  virtual void RefreshPresentation() override;
+ virtual void Tick(float DeltaSeconds) override;
  UFUNCTION(BlueprintCallable,Category="VeilFall") void SetArmed(bool bNewArmed);
  UPROPERTY(BlueprintReadOnly,Category="VeilFall") bool bArmed=false;
  void SetRiding(USceneComponent* Seat);

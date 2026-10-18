@@ -1,0 +1,90 @@
+[
+  {
+    "name": "TEMP_Shotgun",
+    "triangles": 1540,
+    "materials": [
+      "VF_Steel",
+      "VF_Polymer",
+      "VF_Rubber"
+    ],
+    "cm": [
+      4.8,
+      107.3,
+      19.2
+    ],
+    "sockets": [
+      "Eject",
+      "Grip_L",
+      "Mag",
+      "Muzzle",
+      "Sight"
+    ],
+    "license": "Original procedural project source; no third-party inputs",
+    "forward": "Blender -Y; Unreal import force-front-X; pivot at pistol grip"
+  },
+  {
+    "name": "TEMP_MachineGun",
+    "triangles": 1712,
+    "materials": [
+      "VF_Steel",
+      "VF_Polymer",
+      "VF_OliveDrab"
+    ],
+    "cm": [
+      10.5,
+      127.5,
+      25.4
+    ],
+    "sockets": [
+      "Eject",
+      "Grip_L",
+      "Mag",
+      "Muzzle",
+      "Sight"
+    ],
+    "license": "Original procedural project source; no third-party inputs",
+    "forward": "Blender -Y; Unreal import force-front-X; pivot at pistol grip"
+  },
+  {
+    "name": "TEMP_SniperRifle",
+    "triangles": 1912,
+    "materials": [
+      "VF_Polymer",
+      "VF_Steel",
+      "VF_Rubber"
+    ],
+    "cm": [
+      9.3,
+      128.6,
+      25.5
+    ],
+    "sockets": [
+      "Eject",
+      "Grip_L",
+      "Mag",
+      "Muzzle",
+      "Sight"
+    ],
+    "license": "Original procedural project source; no third-party inputs",
+    "forward": "Blender -Y; Unreal import force-front-X; pivot at pistol grip"
+  },
+  {
+    "name": "TEMP_Grenade",
+    "triangles": 1484,
+    "materials": [
+      "VF_OliveDrab",
+      "VF_Steel"
+    ],
+    "cm": [
+      6.4,
+      6.5,
+      9.8
+    ],
+    "sockets": [
+      "Grip",
+      "Top"
+    ],
+    "license": "Original procedural project source; no third-party inputs",
+    "forward": "Centre pivot"
+  }
+]

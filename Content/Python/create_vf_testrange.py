@@ -105,6 +105,17 @@ for (x, y) in [(2300, 700), (2700, 1300), (2300, 1900), (3000, 1000)]:
     box('EnemyCover', 'Enemies', (x - 90, y, 60), (40, 260, 120), 'Hay')
     spawn(NCD, (x, y, 100), 180, 'NCD', 'Enemies', {'weapon_damage': 6.0})
 
+# ------------------------------------------------------------------ armory (sound test bed): F at a table to take that weapon, F at the crate to throw a grenade
+# Sounds for every weapon and the grenade come from /Game/VeilFall/Audio/DA_VF_WeaponSounds; the HUD shows which are assigned.
+sign('ARMORY: F to take a weapon or throw a grenade', (-2500, -1000, 230), yaw=180.0, size=26)
+W = '/Game/VeilFall/Weapons/'
+for i, (wid, mesh) in enumerate([('weapon.carbine', '/Game/G4/Meshes/SM_Carbine'), ('weapon.shotgun', W + 'TEMP_Shotgun'), ('weapon.mg', W + 'TEMP_MachineGun'),
+                                 ('weapon.marksman', W + 'TEMP_SniperRifle'), ('weapon.pistol', None)]):
+    r = spawn(unreal.VFWeaponRack, (-2450, -2050 + i * 220, 45), 0, 'Rack', 'Armory', {'weapon_id': wid})
+    if mesh: r.set_editor_property('model', assets.load_asset(mesh))  # set_editor_property re-runs OnConstruction (display mesh + label)
+    unreal.log('TR_RACK %s mesh=%s label=%s' % (wid, r.get_editor_property('display').static_mesh, r.get_editor_property('label').get_editor_property('text')))
+spawn(unreal.VFGrenadeCrate, (-2450, -850, 30), 0, 'GrenadeCrate', 'Armory')
+
 # ------------------------------------------------------------------ manager, start, lighting, navigation
 spawn(RANGE, (-2800, 0, 50), 0, 'TestRange', 'Gameplay')
 spawn(unreal.PlayerStart, (-2800, 0, 110), 0, 'PlayerStart', 'Gameplay')

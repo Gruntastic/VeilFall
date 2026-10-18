@@ -229,3 +229,17 @@ void AVFGreyboxLine::OnConstruction(const FTransform& T){
   for(int32 i=0;i<Posts;++i)for(float Z:{55.f,110.f})Secondary->AddInstance(FTransform(FRotator(0,Yaw,0),Ground(Dir*Step*(i+.5f))+FVector(0,0,Z),FVector(Step/100.f,.05f,.1f)));
  }
 }
+
+// ---------------------------------------------------------------- weapon sounds
+UVFWeaponSounds* UVFWeaponSounds::Get(){
+ static TWeakObjectPtr<UVFWeaponSounds> Cached;
+ if(!Cached.IsValid())Cached=LoadObject<UVFWeaponSounds>(nullptr,TEXT("/Game/VeilFall/Audio/DA_VF_WeaponSounds.DA_VF_WeaponSounds"),nullptr,LOAD_NoWarn|LOAD_Quiet);
+ return Cached.Get();
+}
+USoundBase* UVFWeaponSounds::Fire(FName Weapon,bool bNPC)const{
+ const FVFWeaponSoundSet* S=Weapons.Find(Weapon);if(!S)return nullptr;
+ if(bNPC&&!S->NPCFire.IsEmpty())if(USoundBase* N=S->NPCFire[FMath::RandHelper(S->NPCFire.Num())].LoadSynchronous())return N;
+ return S->Fire.LoadSynchronous();
+}
+USoundBase* UVFWeaponSounds::Reload(FName Weapon)const{const FVFWeaponSoundSet* S=Weapons.Find(Weapon);return S?S->Reload.LoadSynchronous():nullptr;}
+USoundBase* UVFWeaponSounds::Equip(FName Weapon)const{const FVFWeaponSoundSet* S=Weapons.Find(Weapon);return S?S->Equip.LoadSynchronous():nullptr;}

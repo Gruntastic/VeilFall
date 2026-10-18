@@ -145,6 +145,7 @@ void AVFMissionController::PlayShot(const FVector& At){
  UGameplayStatics::PlaySoundAtLocation(this,Shot,At,.55f,FMath::FRandRange(.9f,1.08f),0,ShotAttenuation);
 }
 USoundBase* AVFMissionController::PlayerShot(FName Weapon) const{
+ if(const auto* D=UVFWeaponSounds::Get())if(USoundBase* S=D->Fire(Weapon))return S;
  if(Weapon=="weapon.pistol"&&PistolLoaded)return PistolLoaded;
  if((Weapon=="weapon.carbine"||Weapon=="weapon.marksman")&&RifleLoaded)return RifleLoaded;
  return GunshotLoaded;

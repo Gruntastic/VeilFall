@@ -81,9 +81,12 @@ void UVFIntroHUD::NativeTick(const FGeometry& G,float Dt){
   if(Armed){const auto* A=Pawn->Combat->CurrentAmmo();const auto& CS=Pawn->Combat->State;const auto Spec=Pawn->Combat->Spec(Pawn->Combat->EquippedId);
    Status->SetText(FText::FromString(FString::Printf(TEXT("%s  %d / %d%s\nHealth %.0f   Med %d"),*Spec.DisplayName,A?A->Magazine:0,A?A->Reserve:0,CS.bReloading?TEXT("  RELOADING"):TEXT(""),Pawn->Health->State.Health,CS.MedicalCharges)));
    // Player gunshot audio: the combat component has no native sound hook, so watch the magazine.
-   if(A&&Pawn->Combat->EquippedId==LastWeapon&&A->Magazine<LastMagazine&&!CS.bReloading)if(Mission)if(auto* Shot=Mission->PlayerShot(Pawn->Combat->EquippedId))UGameplayStatics::PlaySound2D(this,Shot,.45f,FMath::FRandRange(.95f,1.05f));
-   const bool bRifle=Pawn->Combat->EquippedId=="weapon.carbine"||Pawn->Combat->EquippedId=="weapon.marksman";
-   if(CS.bReloading&&!bWasReloading&&bRifle&&Mission&&Mission->RifleReload())UGameplayStatics::PlaySound2D(this,Mission->RifleReload(),.6f);
+   // Sounds come from DA_VF_WeaponSounds, then the mission controller (intro); the test range has only the data asset.
+   const FName Id=Pawn->Combat->EquippedId;const auto* Sounds=UVFWeaponSounds::Get();
+   if(A&&Id==LastWeapon&&A->Magazine<LastMagazine&&!CS.bReloading)if(USoundBase* Shot=Mission?Mission->PlayerShot(Id):Sounds?Sounds->Fire(Id):nullptr)UGameplayStatics::PlaySound2D(this,Shot,.45f,FMath::FRandRange(.95f,1.05f));
+   const bool bRifle=Id=="weapon.carbine"||Id=="weapon.marksman";
+   if(CS.bReloading&&!bWasReloading){USoundBase* R=Sounds?Sounds->Reload(Id):nullptr;if(!R&&bRifle&&Mission)R=Mission->RifleReload();if(R)UGameplayStatics::PlaySound2D(this,R,.6f);}
+   if(Id!=LastWeapon&&!LastWeapon.IsNone()&&Sounds)if(USoundBase* E=Sounds->Equip(Id))UGameplayStatics::PlaySound2D(this,E,.6f);
    bWasReloading=CS.bReloading;
    LastMagazine=A?A->Magazine:-1;LastWeapon=Pawn->Combat->EquippedId;
   }else Status->SetText(FText());
@@ -123,7 +126,12 @@ void AVFIntroPlayerController::SetupInputComponent(){
  InputComponent->BindKey(EKeys::F9,IE_Pressed,this,&AVFIntroPlayerController::VFCheckpoint);
 #endif
 }
-void AVFIntroPlayerController::UsePressed(){if(auto* M=AVFMissionController::Get(this))M->OnPlayerUse();}
+void AVFIntroPlayerController::UsePressed(){
+ if(auto* M=AVFMissionController::Get(this)){M->OnPlayerUse();return;}
+ // No mission (test range): use whatever interactable is in the 3 m view trace.
+ APawn* P=GetPawn();if(!P)return;FVector Eye;FRotator R;P->GetActorEyesViewPoint(Eye,R);FHitResult Hit;FCollisionQueryParams Q(SCENE_QUERY_STAT(VFUse),false,P);
+ if(GetWorld()->LineTraceSingleByChannel(Hit,Eye,Eye+R.Vector()*300,ECC_Visibility,Q)&&Hit.GetActor()&&Hit.GetActor()->Implements<UFoundationInteractable>())IFoundationInteractable::Execute_Activate(Hit.GetActor(),P);
+}
 void AVFIntroPlayerController::OpenKeypad(){
  if(!HUD)return;HUD->ShowKeypad(true);FInputModeUIOnly Mode;Mode.SetWidgetToFocus(HUD->TakeWidget());SetInputMode(Mode);
 }

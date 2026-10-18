@@ -17,6 +17,7 @@
 #include "InputMappingContext.h"
 #include "Engine/LocalPlayer.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundAttenuation.h"
 #include "EngineUtils.h"
 #include "TimerManager.h"
 #include "UObject/ConstructorHelpers.h"
@@ -177,6 +178,9 @@ void AVFIntroAIController::Fire(ACombatCharacter* T){
  const FRotator AimRot=(Aim-Eye).Rotation();SetControlRotation(AimRot);Me->SetActorRotation(FRotator(0,AimRot.Yaw,0));
  const FVector Dir=FMath::VRandCone(AimRot.Vector(),FMath::DegreesToRadians(Cone));
  Me->Combat->ServerFire_Implementation(Dir,++Sequence);if(M)M->PlayShot(Me->GetActorLocation());
+ else if(auto* D=UVFWeaponSounds::Get())if(USoundBase* Shot=D->Fire(Me->Combat->EquippedId,true)){
+  if(!ShotAttenuation){ShotAttenuation=NewObject<USoundAttenuation>(this);ShotAttenuation->Attenuation.bAttenuate=true;ShotAttenuation->Attenuation.bSpatialize=true;ShotAttenuation->Attenuation.FalloffDistance=9000;ShotAttenuation->Attenuation.AttenuationShapeExtents=FVector(400,0,0);}
+  UGameplayStatics::PlaySoundAtLocation(this,Shot,Me->GetActorLocation(),.55f,FMath::FRandRange(.9f,1.08f),0,ShotAttenuation);}
  const auto Spec=Me->Combat->Spec(Me->Combat->EquippedId);NextFire=Now+FMath::Max(Spec.ShotInterval,.12f);
  if(++Burst>=FMath::RandRange(3,5)){Burst=0;BurstPause=Now+FMath::FRandRange(1.1f,2.4f);}
 }
@@ -217,14 +221,20 @@ AVFGrenade::AVFGrenade(){
  static ConstructorHelpers::FObjectFinder<UStaticMesh> Sphere(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
  Mesh=CreateDefaultSubobject<UStaticMeshComponent>("Mesh");SetRootComponent(Mesh);Mesh->SetStaticMesh(Sphere.Object);Mesh->SetRelativeScale3D(FVector(.12f));
  Mesh->SetCollisionProfileName("BlockAllDynamic");Mesh->SetCollisionResponseToChannel(ECC_Pawn,ECR_Ignore);Mesh->SetCollisionResponseToChannel(ECC_Visibility,ECR_Ignore);
+ // Collision stays on the sphere; the imported TEMP_Grenade model (if present) is shown instead of it.
+ Visual=CreateDefaultSubobject<UStaticMeshComponent>("Visual");Visual->SetupAttachment(Mesh);Visual->SetCollisionEnabled(ECollisionEnabled::NoCollision);Visual->SetUsingAbsoluteScale(true);
  Movement=CreateDefaultSubobject<UProjectileMovementComponent>("Movement");Movement->bShouldBounce=true;Movement->Bounciness=.25f;Movement->Friction=.5f;Movement->bAutoActivate=false;
 }
 void AVFGrenade::Launch(const FVector& V,AActor* Thrower){
  Source=Thrower;VF::Paint(Mesh,FLinearColor(.05f,.07f,.04f));Movement->Velocity=V;Movement->Activate();
+ if(auto* Model=LoadObject<UStaticMesh>(nullptr,TEXT("/Game/VeilFall/Weapons/TEMP_Grenade.TEMP_Grenade"),nullptr,LOAD_NoWarn|LOAD_Quiet)){Visual->SetStaticMesh(Model);Mesh->SetVisibility(false,false);}
+ Movement->OnProjectileBounce.AddDynamic(this,&AVFGrenade::Bounced);
  GetWorldTimerManager().SetTimer(Fuse,this,&AVFGrenade::Explode,3.2f,false);
 }
 void AVFGrenade::Explode(){
- const FVector P=GetActorLocation();if(auto* M=AVFMissionController::Get(this))M->SpawnBlast(P,.7f,false,true);
+ const FVector P=GetActorLocation();auto* Sounds=UVFWeaponSounds::Get();USoundBase* Boom=Sounds?Sounds->GrenadeExplosion.LoadSynchronous():nullptr;
+ if(auto* M=AVFMissionController::Get(this))M->SpawnBlast(P,.7f,false,true,Boom);
+ else if(auto* B=GetWorld()->SpawnActor<AVFBlastEffect>(AVFBlastEffect::StaticClass(),P,FRotator::ZeroRotator))B->Init(.7f,Boom,false); // test range: no mission controller
  for(TActorIterator<ACombatCharacter> It(GetWorld());It;++It){
   const float D=FVector::Dist(It->GetActorLocation(),P);if(D>520||!It->Health)continue;
   FHitResult Hit;FCollisionQueryParams Q(SCENE_QUERY_STAT(VFGrenade),false,this);Q.AddIgnoredActor(*It);
@@ -259,6 +269,19 @@ void AVFIntroCharacter::RefreshPresentation(){
  Super::RefreshPresentation();if(!Health||!Weapon)return;const bool Alive=Health->State.Life==EVeilLife::Alive;
  Weapon->SetVisibility(Alive&&bArmed);WorldWeapon->SetVisibility(Alive&&bArmed);
  if(bRiding)GetCharacterMovement()->DisableMovement();
+}
+void AVFGrenade::Bounced(const FHitResult& Hit,const FVector& Velocity){
+ const double Now=GetWorld()->GetTimeSeconds();if(Now-LastBounce<.15||Velocity.Size()<120)return;LastBounce=Now;
+ if(auto* D=UVFWeaponSounds::Get())if(USoundBase* S=D->GrenadeBounce.LoadSynchronous())UGameplayStatics::PlaySoundAtLocation(this,S,GetActorLocation(),FMath::Clamp(Velocity.Size()/900.f,.2f,1.f));
+}
+// First-person stand-in models for weapons that have one (Content/VeilFall/Weapons, pivot at the grip); others keep the Tactical defaults.
+void AVFIntroCharacter::Tick(float DeltaSeconds){
+ Super::Tick(DeltaSeconds);if(!Weapon||!IsLocallyControlled())return;
+ const FName Id=Combat->EquippedId;const TCHAR* Path=Id=="weapon.shotgun"?TEXT("TEMP_Shotgun"):Id=="weapon.mg"?TEXT("TEMP_MachineGun"):Id=="weapon.marksman"?TEXT("TEMP_SniperRifle"):nullptr;
+ static TMap<FName,TWeakObjectPtr<UStaticMesh>> Models;
+ UStaticMesh* Model=nullptr;if(Path){auto& Slot=Models.FindOrAdd(Id);if(!Slot.IsValid())Slot=LoadObject<UStaticMesh>(nullptr,*FString::Printf(TEXT("/Game/VeilFall/Weapons/%s.%s"),Path,Path),nullptr,LOAD_NoWarn|LOAD_Quiet);Model=Slot.Get();}
+ if(Model){Weapon->SetStaticMesh(Model);Weapon->SetRelativeScale3D(FVector(.55f));Weapon->SetRelativeLocation(FVector(30,16,-22));}
+ else Weapon->SetRelativeLocation(FVector(45,18,-20));
 }
 void AVFIntroCharacter::SetRiding(USceneComponent* Seat){
  if(Seat){bRiding=true;GetCharacterMovement()->DisableMovement();SetActorEnableCollision(false);AttachToComponent(Seat,FAttachmentTransformRules::SnapToTargetNotIncludingScale);}
