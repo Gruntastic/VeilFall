@@ -64,3 +64,4 @@ Explosions	SFX_Rocket_Impact	Combat & Warfare Sound FX/Weapons/RPG Impact.wav
 Explosions	SFX_Explosion_Hybrid	Blockbuster Sound FX/Explosions/Hybrid Explosion.wav
 Weapons	SFX_Gun_Rifle_Shot	last round of SFX_Gun_Rifle_CombatBurst (slice_rifle_shots.py)
 Weapons	SFX_Gun_Rifle_NPC_01..03	rounds 1, 4, 7 of SFX_Gun_Rifle_AutoBurst (slice_rifle_shots.py)
+Weapons	SFX_Gun_Sniper_Shot	Supplied by Matthew in the project thread, 2026-10-18 ("Sniper Shot.wav", 96 kHz 24-bit stereo; not from D:/SFX)
