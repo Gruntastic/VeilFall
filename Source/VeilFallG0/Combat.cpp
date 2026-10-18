@@ -30,7 +30,7 @@ FVeilWeaponSpec UCombatDataLibrary::DefaultWeaponSpec(FName Id) {
  FVeilWeaponSpec S; S.StableId=Id;
  if(Id=="weapon.shotgun") {S.DisplayName="Shotgun";S.MagazineSize=6;S.ReserveLimit=24;S.Damage=11;S.Penetration=0;S.ShotInterval=.8f;S.ReloadSeconds=2.8f;S.RangeCm=2500;S.Pellets=8;S.SpreadDegrees=3;S.RecoilDegrees=2;S.bAutomatic=false;}
  else if(Id=="weapon.marksman") {S.DisplayName="Sniper rifle";S.MagazineSize=10;S.ReserveLimit=30;S.Damage=90;S.Penetration=20;S.ShotInterval=.8f;S.ReloadSeconds=2.6f;S.RangeCm=25000;S.RecoilDegrees=1.8f;S.bAutomatic=false;}
- else if(Id=="weapon.mg") {S.DisplayName="Machine gun";S.MagazineSize=100;S.ReserveLimit=300;S.Damage=30;S.Penetration=12;S.ShotInterval=.09f;S.ReloadSeconds=5;S.RangeCm=15000;S.SpreadDegrees=1.2f;S.RecoilDegrees=.45f;S.bAutomatic=true;}
+ else if(Id=="weapon.mg") {S.DisplayName="Machine gun";S.MagazineSize=100;S.ReserveLimit=300;S.Damage=30;S.Penetration=12;S.ShotInterval=.08f;S.ReloadSeconds=5;S.RangeCm=15000;S.SpreadDegrees=1.2f;S.RecoilDegrees=.45f;S.bAutomatic=true;}
  else if(Id=="weapon.pistol") {S.DisplayName="Pistol";S.MagazineSize=15;S.ReserveLimit=45;S.Damage=38;S.Penetration=3;S.ShotInterval=.22f;S.ReloadSeconds=1.4f;S.RangeCm=5000;S.RecoilDegrees=.6f;S.bAutomatic=false;}
  else if(Id!="weapon.carbine") {S.MagazineSize=0;}
  return S;

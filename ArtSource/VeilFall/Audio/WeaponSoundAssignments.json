@@ -1,4 +1,7 @@
 {
   "_note": "Sounds Matthew picked for the test range / intro. Applied to DA_VF_WeaponSounds by Content/Python/assign_vf_weapon_sounds.py (Scripts/VFTestRange.ps1 Sounds).",
-  "weapon.marksman.fire": "Weapons/SFX_Gun_Sniper_Shot"
+  "weapon.marksman.fire": "Weapons/SFX_Gun_Sniper_Shot",
+  "weapon.shotgun.fire": "Weapons/SFX_Gun_Shotgun_Shot",
+  "weapon.mg.fire": "Weapons/SFX_Gun_MachineGun_Shot",
+  "weapon.mg.npc_fire": ["Weapons/SFX_Gun_MachineGun_NPC_01", "Weapons/SFX_Gun_MachineGun_NPC_02", "Weapons/SFX_Gun_MachineGun_NPC_03"]
 }
