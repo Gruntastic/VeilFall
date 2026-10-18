@@ -583,7 +583,7 @@ void AVFMissionController::BeginWave(int32 Number){
  };
  switch(Number){
  case 1:
-  Hint(TEXT("[RMB] Aim through the firing ports. [Ctrl] Crouch behind the plate to break line of sight."));
+  Hint(TEXT("[Ctrl] Crouch behind the plate for cover. Hold [RMB] to pop up and aim through the ports; release to drop back."));
   for(TActorIterator<AVFIntroNPC> It(GetWorld());It;++It)if(It->ActorHasTag("W1")&&It->IsAlive())if(auto* AI=Cast<AVFIntroAIController>(It->GetController()))AI->Assault("drive",10);
   if(LivingNCD()==0)Spawn(TEXT("w1_"),"drive",false,10);
   Lines("wave1");break;

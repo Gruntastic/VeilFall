@@ -53,10 +53,12 @@ float UTacticalMovement::GetMaxSpeed()const{
 }
 void UTacticalMovement::UpdateCharacterStateBeforeMovement(float Delta){
  auto* P=Cast<ATacticalCharacter>(CharacterOwner);if(!P||P->GetLocalRole()==ROLE_SimulatedProxy){Super::UpdateCharacterStateBeforeMovement(Delta);return;}
- const bool CrouchIntent=bWantsToCrouch;const bool Top=P->Health->State.Life==EVeilLife::Alive&&P->ChoosePeek(float(LeanRight)-float(LeanLeft),CrouchIntent)==EVeilPeek::Top;
+ if(P->IsLocallyControlled())Aiming=P->Combat->IsADS();
+ // Over-top exposure: Q/E at waist cover (ChoosePeek), or holding ADS while crouched at cover the standing sight line clears.
+ const bool CrouchIntent=bWantsToCrouch;const bool Alive=P->Health->State.Life==EVeilLife::Alive;
+ const bool Top=Alive&&(P->ChoosePeek(float(LeanRight)-float(LeanLeft),CrouchIntent)==EVeilPeek::Top||(CrouchIntent&&Aiming&&P->CanAimOverCover()));
  bWantsToCrouch=CrouchIntent&&!Top;Super::UpdateCharacterStateBeforeMovement(Delta);bWantsToCrouch=CrouchIntent;P->PoppingUp=Top&&!IsCrouching();
  const bool Forward=FVector::DotProduct(GetCurrentAcceleration().GetSafeNormal2D(),P->GetActorForwardVector())>.4f;
- if(P->IsLocallyControlled())Aiming=P->Combat->IsADS();
  const bool Eligible=P->Health->State.Life==EVeilLife::Alive&&IsMovingOnGround()&&Forward&&!IsCrouching()&&!Aiming&&!LeanLeft&&!LeanRight&&P->Combat->State.Use==EVeilUse::None;
  auto& Clock=P->HasAuthority()?P->Sprint:Predicted;Clock.Advance(P->ServerTime(),WantsSprint,Eligible,Velocity.SizeSquared2D()>FMath::Square(100.f));
 }
@@ -72,18 +74,29 @@ bool ATacticalCharacter::NearCover()const{
  FCollisionObjectQueryParams Objects;Objects.AddObjectTypesToQuery(ECC_WorldStatic);Objects.AddObjectTypesToQuery(ECC_WorldDynamic);FCollisionQueryParams Q(SCENE_QUERY_STAT(G4Cover),false,this);const FVector Start=GetActorLocation()+FVector(0,0,65-GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
  for(FVector Direction:{GetActorForwardVector(),GetActorRightVector(),-GetActorForwardVector(),-GetActorRightVector()}){FHitResult Hit;if(GetWorld()->SweepSingleByObjectType(Hit,Start,Start+Direction*90,FQuat::Identity,Objects,FCollisionShape::MakeSphere(12),Q)&&FMath::Abs(Hit.ImpactNormal.Z)<.5f)return true;}return false;
 }
+FVector ATacticalCharacter::LowCoverFace()const{
+ FCollisionObjectQueryParams Objects;Objects.AddObjectTypesToQuery(ECC_WorldStatic);Objects.AddObjectTypesToQuery(ECC_WorldDynamic);FCollisionQueryParams Q(SCENE_QUERY_STAT(G4Peek),false,this);
+ const FVector Low=GetActorLocation()-FVector(0,0,GetCapsuleComponent()->GetScaledCapsuleHalfHeight()-65);FVector Face=FVector::ZeroVector;float Distance=110;
+ for(const FVector D:{GetActorForwardVector(),GetActorRightVector(),-GetActorForwardVector(),-GetActorRightVector()}){FHitResult Hit;if(GetWorld()->SweepSingleByObjectType(Hit,Low,Low+D*90,FQuat::Identity,Objects,FCollisionShape::MakeSphere(9),Q)&&FMath::Abs(Hit.ImpactNormal.Z)<.5f&&Hit.Distance<Distance){Face=D;Distance=Hit.Distance;}}
+ return Face;
+}
+bool ATacticalCharacter::FaceBlockedAt(const FVector& Face,float Height)const{
+ FCollisionObjectQueryParams Objects;Objects.AddObjectTypesToQuery(ECC_WorldStatic);Objects.AddObjectTypesToQuery(ECC_WorldDynamic);FCollisionQueryParams Q(SCENE_QUERY_STAT(G4Peek),false,this);
+ const FVector At=GetActorLocation()-FVector(0,0,GetCapsuleComponent()->GetScaledCapsuleHalfHeight()-Height);FHitResult Hit;
+ return GetWorld()->SweepSingleByObjectType(Hit,At,At+Face*90,FQuat::Identity,Objects,FCollisionShape::MakeSphere(9),Q);
+}
 EVeilPeek ATacticalCharacter::ChoosePeek(float Direction,bool CrouchIntent)const{
  if(FMath::IsNearlyZero(Direction)||!NearCover())return EVeilPeek::None;
  if(!CrouchIntent)return EVeilPeek::Side;
- FCollisionObjectQueryParams Objects;Objects.AddObjectTypesToQuery(ECC_WorldStatic);Objects.AddObjectTypesToQuery(ECC_WorldDynamic);FCollisionQueryParams Q(SCENE_QUERY_STAT(G4Peek),false,this);
- const FVector Feet=GetActorLocation()-FVector(0,0,GetCapsuleComponent()->GetScaledCapsuleHalfHeight());const FVector Low=Feet+FVector(0,0,65);FVector Face=FVector::ZeroVector;float Distance=110;
- for(const FVector D:{GetActorForwardVector(),GetActorRightVector(),-GetActorForwardVector(),-GetActorRightVector()}){FHitResult Hit;if(GetWorld()->SweepSingleByObjectType(Hit,Low,Low+D*90,FQuat::Identity,Objects,FCollisionShape::MakeSphere(9),Q)&&FMath::Abs(Hit.ImpactNormal.Z)<.5f&&Hit.Distance<Distance){Face=D;Distance=Hit.Distance;}}
- if(Face.IsNearlyZero())return EVeilPeek::Side;
- FHitResult Hit;const FVector High=Feet+FVector(0,0,PopClearanceHeight());
- if(GetWorld()->SweepSingleByObjectType(Hit,High,High+Face*90,FQuat::Identity,Objects,FCollisionShape::MakeSphere(9),Q))return EVeilPeek::Side;
- const FVector Side=Low+GetActorRightVector()*FMath::Clamp(Direction,-1.f,1.f)*28;
+ const FVector Face=LowCoverFace();
+ if(Face.IsNearlyZero()||FaceBlockedAt(Face,PopClearanceHeight()))return EVeilPeek::Side;
+ FCollisionObjectQueryParams Objects;Objects.AddObjectTypesToQuery(ECC_WorldStatic);Objects.AddObjectTypesToQuery(ECC_WorldDynamic);FCollisionQueryParams Q(SCENE_QUERY_STAT(G4Peek),false,this);FHitResult Hit;
+ const FVector Side=GetActorLocation()-FVector(0,0,GetCapsuleComponent()->GetScaledCapsuleHalfHeight()-65)+GetActorRightVector()*FMath::Clamp(Direction,-1.f,1.f)*28;
  // Test the chosen edge at crouched exposure height; an obstructed side stays a top peek.
  return GetWorld()->SweepSingleByObjectType(Hit,Side,Side+Face*90,FQuat::Identity,Objects,FCollisionShape::MakeSphere(9),Q)?EVeilPeek::Top:EVeilPeek::Side;
+}
+bool ATacticalCharacter::CanAimOverCover()const{
+ if(!NearCover())return false;const FVector Face=LowCoverFace();return !Face.IsNearlyZero()&&!FaceBlockedAt(Face,AimPopClearanceHeight());
 }
 FVector ATacticalCharacter::SafeEyeOffset(float Amount)const{
  if(!NearCover())return FVector::ZeroVector;FVector Origin;FRotator Rotation;Super::GetActorEyesViewPoint(Origin,Rotation);const FVector Desired=FRotationMatrix(FRotator(0,Rotation.Yaw,0)).GetUnitAxis(EAxis::Y)*FMath::Clamp(Amount,-1.f,1.f)*28;
@@ -128,5 +141,7 @@ ATacticalProbeCover::ATacticalProbeCover(){bReplicates=true;bAlwaysRelevant=true
 
 
 float ATacticalCharacter::PopClearanceHeight()const{const auto* Defaults=GetClass()->GetDefaultObject<ACharacter>();return Defaults->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight()+Defaults->BaseEyeHeight;}
+// Standing eye height less a margin for the weapon: anything lower can be aimed over from a standing pop.
+float ATacticalCharacter::AimPopClearanceHeight()const{return ATacticalCharacter::PopClearanceHeight()-20;}
 UClass* ATacticalCharacter::DiagnosticCoverClass()const{return ATacticalProbeCover::StaticClass();}
 

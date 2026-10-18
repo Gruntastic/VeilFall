@@ -163,19 +163,20 @@ void AVFIntroAIController::PickCover(bool bAdvance){
  MoveToLocation(Best->GetActorLocation(),35,true,true,true,false,nullptr,false);
 }
 void AVFIntroAIController::Fire(ACombatCharacter* T){
- auto* Me=Cast<AVFIntroNPC>(GetPawn());auto* M=Mission();if(!Me||!T||!M)return;const double Now=GetWorld()->GetTimeSeconds();
+ // No mission controller (developer test range): fire freely, no shot tokens or mission audio.
+ auto* Me=Cast<AVFIntroNPC>(GetPawn());auto* M=Mission();if(!Me||!T)return;const double Now=GetWorld()->GetTimeSeconds();
  if(Now<NextFire||Now<BurstPause)return;
  auto* Ammo=Me->Combat->CurrentAmmo();if(!Ammo)return;
  if(Ammo->Magazine==0){if(Ammo->Reserve==0)Me->Combat->Restock();else Me->Combat->ServerReload_Implementation();return;}
  if(Me->Combat->State.bReloading)return;
  // Professional pressure: only a few NCD may engage the player directly; the rest suppress the position.
- const bool bPlayer=T->IsPlayerControlled();const bool bToken=!bPlayer||Me->Faction!=EVFFaction::NCD||M->RequestShotToken(Me,T);
+ const bool bPlayer=T->IsPlayerControlled();const bool bToken=!bPlayer||Me->Faction!=EVFFaction::NCD||!M||M->RequestShotToken(Me,T);
  FVector Eye;FRotator ER;Me->GetActorEyesViewPoint(Eye,ER);
  const FVector Aim=T->GetActorLocation()+FVector(0,0,FMath::FRandRange(0.f,45.f));const float Dist=FVector::Dist(Eye,Aim);
  const float Cone=(bToken?Accuracy:Accuracy*3.2f)*FMath::Clamp(Dist/2000.f,.6f,2.2f);
  const FRotator AimRot=(Aim-Eye).Rotation();SetControlRotation(AimRot);Me->SetActorRotation(FRotator(0,AimRot.Yaw,0));
  const FVector Dir=FMath::VRandCone(AimRot.Vector(),FMath::DegreesToRadians(Cone));
- Me->Combat->ServerFire_Implementation(Dir,++Sequence);M->PlayShot(Me->GetActorLocation());
+ Me->Combat->ServerFire_Implementation(Dir,++Sequence);if(M)M->PlayShot(Me->GetActorLocation());
  const auto Spec=Me->Combat->Spec(Me->Combat->EquippedId);NextFire=Now+FMath::Max(Spec.ShotInterval,.12f);
  if(++Burst>=FMath::RandRange(3,5)){Burst=0;BurstPause=Now+FMath::FRandRange(1.1f,2.4f);}
 }

@@ -48,6 +48,10 @@ public:
  virtual UClass* DiagnosticCoverClass()const;
  virtual float DiagnosticCoverHeight()const{return 110;}
  EVeilPeek ChoosePeek(float Direction,bool CrouchIntent)const;
+ // Crouched at cover with ADS held: stand up over it while aiming, drop back on release.
+ // Allowed when the cover top is below AimPopClearanceHeight (foot-relative), i.e. the standing sight line clears it.
+ bool CanAimOverCover()const;
+ virtual float AimPopClearanceHeight()const;
  void ToggleCrouch();
  UPROPERTY(Replicated,BlueprintReadOnly) bool PoppingUp=false;
  FVector SafeEyeOffset(float Amount)const;
@@ -62,6 +66,9 @@ private:
  bool ProbeLow=false,ProbeEdge=false,ProbeTopLogged=false,ProbeDropLogged=false,ProbeEdgeLogged=false,ProbeClientTop=false;
  bool ProbePlaced=false,ProbeCover=false,ProbeSprintLogged=false,ProbeCoverLogged=false,ProbeClientLogged=false;
  void DiagnosticTick();
+ // Nearest blocking face at crouched cover height (foot-relative), or zero when nothing is in reach.
+ FVector LowCoverFace()const;
+ bool FaceBlockedAt(const FVector& Face,float Height)const;
  UPROPERTY() TObjectPtr<UInputMappingContext> TacticalContext;
  UPROPERTY() TArray<TObjectPtr<UInputAction>> TacticalActions;
  void SprintStart();void SprintStop();
